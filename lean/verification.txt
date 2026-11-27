@@ -1,0 +1,58 @@
+Lean (version 4.28.0, x86_64-unknown-linux-gnu, commit 7e01a1bf5c70fc6167d49c345d3bf80596e9a79b, Release)
+✔ [3263/3285] Built RefinedBMV.Supporting.RectangleKernel (12s)
+✔ [3264/3285] Built RefinedBMV.Supporting.TrailingMinors (20s)
+✔ [3265/3285] Built RefinedBMV.Kernel (20s)
+✔ [3266/3285] Built RefinedBMV.Supporting.DetEntries (26s)
+✔ [3267/3285] Built RefinedBMV.Supporting.TracePower (14s)
+✔ [3268/3285] Built RefinedBMV.FiniteKernels (28s)
+✔ [3269/3285] Built RefinedBMV.FamilyA (21s)
+✔ [3270/3285] Built RefinedBMV.Words (24s)
+✔ [3271/3285] Built RefinedBMV.FamilyBoundary (21s)
+✔ [3272/3285] Built RefinedBMV.UniformFinite (21s)
+✔ [3273/3285] Built RefinedBMV.MixedDerivative (12s)
+✔ [3274/3285] Built RefinedBMV.QuarticKernel (64s)
+✔ [3275/3285] Built RefinedBMV.QuarticWords (15s)
+✔ [3276/3285] Built RefinedBMV.WordCoefficient (8.9s)
+✔ [3277/3285] Built RefinedBMV.QuarticFamily (88s)
+✔ [3278/3285] Built RefinedBMV.Supporting.Trotter (212s)
+✔ [3279/3285] Built RefinedBMV.OrderFive (223s)
+✔ [3280/3285] Built RefinedBMV.Results (15s)
+✔ [3281/3285] Built RefinedBMV.HighOrders (3.8s)
+✔ [3282/3285] Built RefinedBMV.Exponential (6.1s)
+✔ [3283/3285] Built RefinedBMV.Duhamel (7.5s)
+✔ [3284/3285] Built RefinedBMV (2.9s)
+Build completed successfully (3285 jobs).
+'RefinedBMV.cycleSum_nonneg_of_cyclic' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.certificateFive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.even_word_m3_one_through_six' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.block_cyclic_identity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.positive_of_region_bounds' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.residual_positive_of_integral' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.lowerDiagonal_duhamel_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.duhamel_spectral_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.familyWeight_eq_finiteWeight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.even_word_m3_of_residual' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.quarticKernel_cyclic' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.quarticEvenBlock_positive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.quarticOddBlock_positive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.quarticCertificateThree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.even_word_m4_one_through_three' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.even_word_44' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.even_word_44_congruence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.lowerDiagonal_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.gaugedResidual_tendsto_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.gaugedResidual_tendsto_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.residual_positive_of_mixedDensity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.even_word_m3_of_uniform_mixedDensity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.duhamel_spectral_of_mixedDensity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.quarticCertificateFive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.quarticCertificateSix' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.quarticCertificateEight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.even_word_m4_family' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.exponential_trace_le_spread' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.exponential_m3_one_through_six' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.exponential_m3_of_mixedDensity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.exponential_m4_family' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.affine_trace_third_derivative' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.wordAverage_tendsto_duhamel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RefinedBMV.duhamel_of_uniform_mixedDensity' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,308 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{mathptmx}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=20mm]{geometry}
+\usepackage{booktabs,tabularx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\definecolor{primary}{RGB}{20, 56, 108}
+\definecolor{accent}{RGB}{150, 36, 36}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primary,
+  citecolor=primary,
+  urlcolor=primary,
+  pdftitle={Resolution of the Refined BMV Lower Bound Conjecture for min(n,m)<=3, the m=4 Family up to (8,4), and the Odd-m Polynomial Obstruction},
+  pdfauthor={Autonomous Mathematical Research Preprint}
+}
+
+\setlength{\parskip}{5.5pt plus 2pt minus 1pt}
+\setlength{\parindent}{0pt}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\takeaway}[2]{%
+  \vspace{5pt}\noindent\colorbox{primary!8}{%
+    \parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+      \vspace{4pt}\textbf{\color{primary}#1:}\hspace{0.4em}#2\vspace{4pt}%
+    }%
+  }\vspace{5pt}%
+}
+
+\title{\textbf{\color{primary}Resolution of the Refined Bessis--Moussa--Villani Lower Bound Conjecture for $\min(n,m)\le 3$, the $m=4$ Family through $(8,4)$, and an Exact Odd-$m$ Polynomial Obstruction}}
+
+\author{Autonomous Mathematical Physics Research Preprint\\
+\small\textit{Certified via exact symbolic algebra, Sylvester minor positivity, and outward-rounded interval arithmetic}}
+\date{November 27, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\mathcal{A}_{n,m}(A,B) := \binom{n+m}{m}^{-1}\Tr S_{n+m,m}(A,B)$ denote the normalized average trace over all $\binom{n+m}{m}$ matrix words with $n$ copies of $A$ and $m$ copies of $B$. In 2017, D.~H\"agele proposed the refined Bessis--Moussa--Villani (BMV) conjecture (\href{https://oqp.iqoqi.oeaw.ac.at/open-quantum-problems}{IQOQI Open Quantum Problems \#40} / \href{https://openquantumproblems.com/p/M14}{Open Quantum Problems M14}). While its upper bound was disproved in early 2026, the lower bound $\mathcal{A}_{n,m}(e^\alpha,e^\beta)\ge\Tr(e^{n\alpha+m\beta})$ and its stronger evenly-spread word form $\mathcal{A}_{n,m}(A,B)\ge\Tr((A^{n/m}B)^m)$ (denoted $(E_{n,m})$) remained open for all $d\ge 4$ whenever $\min(n,m)\ge 3$, and even for $d=3$ whenever $n+m\ge 8$.
+
+In this paper, we establish four dimension-independent results holding for \textbf{every matrix dimension $d\ge 1$}:
+(1) \textbf{Complete resolution of $\min(n,m)\le 3$}: $(E_{n,m})$ and $(L_{n,m})$ hold for all integers $n,m\ge 1$ with $\min(n,m)\le 3$, alongside the $n\to\infty$ third-order Duhamel trace inequality and the $n\to 0^+$ logarithmic limit $\Phi_0$;
+(2) \textbf{Pure-integer $m=4$ family through $(8,4)$}: $(E_{n,4})$ holds for all $n\in\{1,2,3,4,5,6,8\}$---even for \textbf{arbitrary indefinite complex Hermitian $X$}---via elementary, computer-free block-diagonal pure-integer Gram matrices whose trailing Sylvester minors have strictly positive integer coefficients in $r=(a-c)^2/(ac)$; by our Duality + Araki--Lieb--Thirring transfer, $(E_{4,5})$, $(E_{4,6})$, and $(E_{4,8})$ (and their exponential forms) follow immediately;
+(3) \textbf{Even-$(2m,4)$ odd-block collapse law}: we identify the minimal odd-block structure ($1\times 1$ for $n=4m+2$, $2\times 2$ for $n=4m$) and prove that single-block ($k=1$) representations fail even when $4\mid n$; and
+(4) \textbf{Exact odd-$m$ homogeneous polynomial obstruction}: we prove in five lines that no homogeneous polynomial cyclic-shifted path PSD kernel can represent $\Phi_{n,m}$ for any odd $m=2r+1\ge 3$ and $n\ge 1$, explaining the sharp structural dichotomy between even and odd $m$.
+The smallest remaining open cases of \href{https://openquantumproblems.com/p/M14}{OQP M14} are pushed to $(7,4)/(4,7)$ and $(5,5)$.
+\end{abstract}
+
+\takeaway{Main Results (All Dimensions $d \ge 1$)}{
+For every dimension $d\ge 1$, all $d\times d$ complex Hermitian $A,B\ge 0$, and all Hermitian $\alpha,\beta,H$:
+(i) \textbf{All $\min(n,m)\le 3$}: $\mathcal{A}_{n,m}(A,B)\ge\Tr((A^{n/m}B)^m)$ and $\mathcal{A}_{n,m}(e^\alpha,e^\beta)\ge\Tr(e^{n\alpha+m\beta})$ hold for every $n,m\ge 1$ with $\min(n,m)\le 3$;
+(ii) \textbf{Third-order Duhamel ($n\to\infty$)}: $\left.\frac{\mathrm{d}^3}{\mathrm{d}t^3}\right|_{t=0}\Tr(e^{H+tB})\ge\Tr((e^{H/3}B)^3)$;
+(iii) \textbf{$m=4$ family ($n\in\{1,2,3,4,5,6,8\}$, indefinite $X$)}: $\mathcal{A}_{n,4}(A,B)\ge\Tr((A^{n/4}B)^4)$ holds for all $A>0$ and $B=A^{-n/8}XA^{-n/8}$ with arbitrary indefinite complex Hermitian $X$, and $(E_{4,5}),(E_{4,6}),(E_{4,8})$ follow for all $A,B\ge 0$;
+(iv) \textbf{Odd-$m$ polynomial obstruction}: no homogeneous polynomial cyclic-shifted path PSD kernel exists for any odd $m\ge 3, n\ge 1$, whereas discrete-grid SDPs confirm non-polynomial PSD path kernels exist for $(5,5)$ and $(6,6)$.}
+
+\section{Introduction and Main Theorems}
+
+The classical Bessis--Moussa--Villani (BMV) conjecture (1975), resolved by Stahl in 2013, states that $\Tr S_{n+m,m}(A,B)\ge 0$ for all positive semidefinite $A,B\ge 0$ and integers $n,m\ge 0$. In 2017, D.~H\"agele proposed a quantitative refinement for $\mathcal{A}_{n,m}(A,B):=\binom{n+m}{m}^{-1}\Tr S_{n+m,m}(A,B)$ (\href{https://oqp.iqoqi.oeaw.ac.at/open-quantum-problems}{IQOQI Problem \#40}, \href{https://openquantumproblems.com/p/M14}{OQP M14}):
+\[
+\Tr\!\big(e^{n\alpha+m\beta}\big)\;\le\;\mathcal{A}_{n,m}(e^\alpha,e^\beta)\;\le\;\Tr\!\big(e^{n\alpha}e^{m\beta}\big).
+\]
+In 2026, Cha--Lee (\href{https://arxiv.org/abs/2603.19927}{arXiv:2603.19927}) and Dinh (\href{https://arxiv.org/html/2605.17782v1}{arXiv:2605.17782}) disproved the upper bound at $d=3,\,(n,m)=(5,5)$ (see also Dinh--Le--Vuong, \href{https://arxiv.org/html/2610.31851v1}{arXiv:2610.31851}). In October 2026, H\"agele (\href{https://arxiv.org/html/2611.00129v1}{arXiv:2611.00129}) established the stronger ``evenly-spread word'' inequality
+\begin{equation}\label{eq:Enm}
+  \mathcal{A}_{n,m}(A,B) \ge \Tr\!\big((A^{n/m}B)^m\big) \qquad (E_{n,m}),
+\end{equation}
+which implies $(L_{n,m})$ via Araki--Lieb--Thirring and Lie--Trotter, for $\min(n,m)\le 2$ (all $d$), $d\le 2$ (all $n,m$), and $(n,m)\in\{(3,3),(4,3)\}$ at $d=3$ via computer-assisted bivariate Bernstein certificates (116 and 2,283 terms). All $d\ge 4$ cases with $\min(n,m)\ge 3$ and all $n+m\ge 8$ cases even at $d=3$ remained open.
+
+\begin{theorem}[Complete Resolution of $\min(n,m)\le 3$ and Duhamel Limit]\label{thm:min3}
+For every dimension $d\ge 1$ and all integers $n,m\ge 1$ with $\min(n,m)\le 3$:
+\begin{enumerate}
+  \item For all $d\times d$ complex Hermitian $A,B\ge 0$, $\mathcal{A}_{n,m}(A,B) \ge \Tr\!\big((A^{n/m}B)^m\big)$.
+  \item For all $d\times d$ complex Hermitian $\alpha,\beta$, $\mathcal{A}_{n,m}(e^\alpha,e^\beta)\ge\Tr(e^{n\alpha+m\beta})$, with equality if and only if $[\alpha,\beta]=0$.
+  \item In the limit $n\to\infty$, for every complex Hermitian $H$ and $B\ge 0$,
+  \[
+    \left.\frac{\mathrm{d}^3}{\mathrm{d}t^3}\right|_{t=0}\Tr\!\big(e^{H+tB}\big)
+    = \mathbb{E}_{(U,V,W)\sim\operatorname{Unif}(\Delta_2)}\!\left[\Tr\!\big(e^{UH}Be^{VH}Be^{WH}B\big)\right]
+    \ge \Tr\!\big((e^{H/3}B)^3\big),
+  \]
+  with equality for $B>0$ if and only if $[H,B]=0$.
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Elementary All-Dimension $m=4$ Family through $(8,4)$]\label{thm:m4_family}
+For every dimension $d\ge 1$, every $n\in\{1,2,3,4,5,6,8\}$, every $d\times d$ complex Hermitian positive definite matrix $A>0$, and every \textbf{arbitrary (possibly indefinite)} complex Hermitian matrix $X$, setting $B := A^{-n/8} X A^{-n/8}$,
+\begin{equation}\label{eq:En4}
+  \mathcal{A}_{n,4}(A,B) \ge \Tr\!\big((A^{n/4}B)^4\big) = \Tr(X^4).
+\end{equation}
+Consequently, $(E_{n,4})$ and $(L_{n,4})$ hold for all $n\in\{1,2,3,4,5,6,8\}$, and by Proposition~\ref{prop:transfer}, $(E_{4,n})$ and $(L_{4,n})$ hold for all $n\in\{5,6,8\}$ as well, in every dimension $d\ge 1$.
+\end{theorem}
+
+\begin{theorem}[Exact Odd-$m$ Homogeneous Polynomial Obstruction]\label{thm:odd_obstruction}
+For every odd integer $m=2r+1\ge 3$, every integer $n\ge 1$, and any power substitution $a_i = x_i^s$ ($s\in\mathbb{Z}_{\ge 1}$, $D=ns$, $k=D/m\in\mathbb{Z}_{\ge 1}$), \textbf{no} homogeneous polynomial cyclic-shifted path PSD kernel
+\[
+  P(x_1; p; q) = \sum_\alpha c_\alpha\, x_1^{u_\alpha} f_\alpha(x_1; p)\, f_\alpha(x_1; q) \qquad \big(c_\alpha > 0,\; p=(x_2,\dots,x_{r+1}),\; q=(x_m,\dots,x_{r+2})\big)
+\]
+can have $m$-fold cyclic average equal to $\binom{n+m-1}{m-1}\Phi_{n,m}(x_1^s,\dots,x_m^s)$.
+\end{theorem}
+
+\section{Duality Transfer and the Dimension-Independent Kernel Framework}
+
+\begin{proposition}[Duality + Araki--Lieb--Thirring Transfer]\label{prop:transfer}
+For all integers $1\le n\le m$ and every dimension $d\ge 1$, $(E_{m,n})$ implies $(E_{n,m})$ for all $A,B\ge 0$.
+\end{proposition}
+
+\begin{proof}
+By binomial symmetry $\mathcal{A}_{n,m}(A,B)=\mathcal{A}_{m,n}(B,A)$ and $(E_{m,n})$, we have $\mathcal{A}_{n,m}(A,B) \ge \Tr((B^{m/n}A)^n) = \Tr((A^{1/2}B^{m/n}A^{1/2})^n)$. Applying Araki--Lieb--Thirring with $P=A^{n/m}\ge 0$, $Q=B\ge 0$, $p=n$, and $r=m/n\ge 1$ yields
+\[
+\Tr\!\big((A^{n/m}B)^m\big) = \Tr\!\big((P^{1/2}QP^{1/2})^{r\cdot n}\big) \le \Tr\!\big((P^{r/2}Q^r P^{r/2})^n\big) = \Tr\!\big((A^{1/2}B^{m/n}A^{1/2})^n\big) \le \mathcal{A}_{n,m}(A,B). \qedhere
+\]
+\end{proof}
+
+Diagonalizing $A=\operatorname{diag}(a_1,\dots,a_d)>0$ and setting $X:=A^{n/(2m)}BA^{n/(2m)}$ yields
+\begin{equation}\label{eq:general_m_sum}
+  \mathcal{A}_{n,m}(A,B) - \Tr(X^m) = \sum_{i_1,\dots,i_m=1}^d \Phi_{n,m}(a_{i_1},\dots,a_{i_m})\, X_{i_1 i_2}\cdots X_{i_m i_1},
+\end{equation}
+where $\Phi_{n,m}(x_1,\dots,x_m) := \binom{n+m-1}{m-1}^{-1}\frac{h_n(x_1,\dots,x_m)}{(x_1\cdots x_m)^{n/m}} - 1$.
+For odd $m=3$, any symmetric PSD kernel $K_n(u,v)\succeq 0$ with $\sum_{\mathrm{cyc}} K_n(y/x,z/x) = 3\Phi_{n,3}(x,y,z)$ proves $(E_{n,3})$ for all $d\ge 1$ and $X\ge 0$ by the Schur product theorem. For even $m=2r$, fixing antipodal vertices $(i_1,i_{r+1})$ pairs forward and backward length-$r$ half-paths $w_p = X_{i_1 i_2}\cdots X_{i_r i_{r+1}}$ and $\overline{w_q} = X_{i_{r+1}i_{r+2}}\cdots X_{i_{2r}i_1}$ as a pure Hermitian quadratic form; any kernel $G(a_{i_1},a_{i_{r+1}}; a_p; a_q)\succeq 0$ in $(p,q)$ whose $r$-fold cyclic average equals $\Phi_{n,2r}$ proves $(E_{n,2r})$ for all $d\ge 1$ and \emph{arbitrary indefinite complex Hermitian $X$}.
+
+\section{Pure-Integer Gram-Matrix Proofs of the $m=4$ Family through $(8,4)$}
+
+For $m=4$, write $A=\operatorname{diag}(\alpha_1^k,\dots,\alpha_d^k)$ ($k=2$ for even $n$, $k=4$ for odd $n$) and $w^{(i_1,i_3)}_j := X_{i_1 j} X_{j i_3}$. Given symmetric pure-integer Gram blocks $G_{n,\mathrm{even}}(a,c)\succeq 0$ and $G_{n,\mathrm{odd}}(a,c)\succeq 0$ on monomial bases $v_{\mathrm{even}}(b)$ and $v_{\mathrm{odd}}(b)$, define $\widetilde{K}_n(b,d;a,c) := v_{\mathrm{even}}(b)^T G_{n,\mathrm{even}}(a,c) v_{\mathrm{even}}(d) + v_{\mathrm{odd}}(b)^T G_{n,\mathrm{odd}}(a,c) v_{\mathrm{odd}}(d)$. Whenever the 2-term cyclic identity
+\begin{equation}\label{eq:m4_cyclic}
+  \widetilde{K}_n(b,d;a,c) + \widetilde{K}_n(a,c;b,d) \equiv \lambda_n\Big(h_n(a^k,b^k,c^k,d^k) - \binom{n+3}{3}(abcd)^{kn/4}\Big)
+\end{equation}
+holds identically, cyclic invariance of $X_{i_1 i_2}X_{i_2 i_3}X_{i_3 i_4}X_{i_4 i_1}$ gives the manifest sum-of-squares identity
+\[
+\mathcal{A}_{n,4}(A,B) - \Tr(X^4) = \frac{2}{\lambda_n\binom{n+3}{3}}\sum_{i_1,i_3=1}^d \frac{1}{(\alpha_{i_1}\alpha_{i_3})^{kn/4}}\Big[\mathbf{u}^{(i_1,i_3)*} G_{n,\mathrm{even}}(\alpha_{i_1},\alpha_{i_3})\mathbf{u}^{(i_1,i_3)} + \mathbf{v}^{(i_1,i_3)*} G_{n,\mathrm{odd}}(\alpha_{i_1},\alpha_{i_3})\mathbf{v}^{(i_1,i_3)}\Big] \ge 0
+\]
+for every $d\ge 1$ and arbitrary indefinite complex Hermitian $X\in\mathbb{C}^{d\times d}$. Every case below is verified identically to $0$ in \texttt{verify\_m4\_family\_integer\_gram.py} (SymPy exact polynomial arithmetic), with all trailing Sylvester minors expressed in $r := (a-c)^2/(ac) \ge 0$ having strictly positive integer coefficients (Table~\ref{tab:m4_summary}).
+
+\begin{table}[!htbp]
+\centering
+\caption{Summary of pure-integer block-diagonal Gram proofs for $(E_{n,4})$ (all $d\ge 1$, arbitrary indefinite complex Hermitian $X$). Every cyclic residual is symbolically $0$, and every trailing Sylvester minor has strictly positive integer coefficients in $r=(a-c)^2/(ac)\ge 0$.}
+\label{tab:m4_summary}
+\begin{tabularx}{\linewidth}{lcccXl}
+\toprule
+Case (Dual) & $(\lambda_n, k)$ & Block Sizes & Basis $v_{\mathrm{even}};\; v_{\mathrm{odd}}$ & Min Nonzero Coeffs of Trailing Minors in $r$ & Indef. $X$ Check \\
+\midrule
+$(1,4)$ & $(1,4)$ & $2\times 2 \oplus 1\times 1$ & $\{1,b^2\};\;\{b\}$ & Even: $1, 1$; Odd: $1$ & exact \\
+$(2,4)$ & $(2,2)$ & $2\times 2 \oplus 1\times 1$ & $\{1,b^2\};\;\{b\}$ & Even: $3, 5$; Odd: $5$ & exact \\
+$(3,4)$ & $(2,4)$ & $4\times 4 \oplus 1\times 1$ & $\{1,b^2,b^4,b^6\};\;\{b^3\}$ & Even: $7, 35, 14, 210$; Odd: $2$ & exact \\
+$(4,4)$ & $(2,2)$ & $3\times 3 \oplus 2\times 2$ & $\{1,b^2,b^4\};\;\{b,b^3\}$ & Even: $5, 41, 61$; Odd: $4, 16$ & $\le 1.7\times 10^{-14}$ \\
+$(5,4)$ ($(4,5)$) & $(1,4)$ & $4\times 4 \oplus 1\times 1$ & $\{1,b^4,b^6,b^8\};\;\{b^5\}$ & Even: $16, 39, 36, 972$; Odd: $14$ & $\le 2.6\times 10^{-13}$ \\
+$(6,4)$ ($(4,6)$) & $(2,2)$ & $4\times 4 \oplus 1\times 1$ & $\{1,b^2,b^4,b^6\};\;\{b^3\}$ & Even: $12, 59, 74, 2581$; Odd: $1$ & $\le 4.2\times 10^{-14}$ \\
+$(8,4)$ ($(4,8)$) & $(4,2)$ & $5\times 5 \oplus 2\times 2$ & $\{1,b^2,b^4,b^6,b^8\};\;\{b^3,b^5\}$ & Even: $29, 144, 5971, 11312, 421264$; Odd: $30, 720$ & $\le 1.6\times 10^{-14}$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Explicit Pure-Integer Gram Certificates for $(4,4)$, $(5,4)$, $(6,4)$, and $(8,4)$}
+
+\textbf{Case $(4,4)$ ($3\times 3\oplus 2\times 2$, $\lambda_4=2, k=2$).} With $v_{\mathrm{even}}=(1,b^2,b^4)^T$ and $v_{\mathrm{odd}}=(b,b^3)^T$:
+\[
+G_{4,\mathrm{even}}(a,c) = \begin{pmatrix}
+2a^8 + 2a^6 c^2 - 3a^4 c^4 + 2a^2 c^6 + 2c^8 & 2(a^3 - c^3)^2 & a^4 - 7a^2 c^2 + c^4 \\
+2(a^3 - c^3)^2 & (a-c)^2(9a^2 + 26ac + 9c^2) & 2(a-c)^2 \\
+a^4 - 7a^2 c^2 + c^4 & 2(a-c)^2 & 5
+\end{pmatrix},\quad
+G_{4,\mathrm{odd}}(a,c) = 4\begin{pmatrix}
+a^2 c^2 (a^2 + c^2) & -2 a^2 c^2 \\
+-2 a^2 c^2 & a^2 + c^2
+\end{pmatrix}.
+\]
+Its trailing minors are $M_1^{\mathrm{odd}}=4(a^2+c^2)>0$, $M_2^{\mathrm{odd}}=16a^2c^2(a^2-c^2)^2\ge 0$, $M_1^{\mathrm{even}}=5>0$, $M_2^{\mathrm{even}}=(a-c)^2(41a^2+138ac+41c^2)\ge 0$, and $M_3^{\mathrm{even}}=(a-c)^4(61a^8+332a^7c+768a^6c^2+1828a^5c^3+2582a^4c^4+1828a^3c^5+768a^2c^6+332ac^7+61c^8)\ge 0$.
+
+\textbf{Case $(5,4)$ ($4\times 4\oplus 1\times 1$, $\lambda_5=1, k=4$, max entry $28$).} With $v_{\mathrm{even}}=(1,b^4,b^6,b^8)^T$ and $v_{\mathrm{odd}}=(b^5)$:
+\[
+G_{5,\mathrm{odd}}(a,c) = \big[14a^4c^4(a-c)^2\big] \ge 0,
+\]
+and symmetric $4\times 4$ even block $G_{5,\mathrm{even}}(a,c)$ given by:
+\begin{align*}
+  G_{0,0} &= a^{20} + a^{16}c^4 + a^{12}c^8 + a^8c^{12} + a^4c^{16} + c^{20}, &
+  G_{0,4} &= a^{16} + a^{12}c^4 - 15a^8c^8 + a^4c^{12} + c^{16}, \\
+  G_{0,6} &= 3a^8c^6 + 3a^6c^8, &
+  G_{0,8} &= a^{12} - 3a^6c^6 + c^{12}, \\
+  G_{4,4} &= a^{12} + 28a^8c^4 - 8a^6c^6 + 28a^4c^8 + c^{12}, &
+  G_{4,6} &= -14a^5c^5, \\
+  G_{4,8} &= a^8 - 27a^4c^4 + c^8, &
+  G_{6,6} &= 3a^8 + 8a^4c^4 + 3c^8, \\
+  G_{6,8} &= -3a^6 - 3c^6, &
+  G_{8,8} &= 16a^4 + 16c^4.
+\end{align*}
+The four trailing minors in $r=(a-c)^2/(ac)$ are $\Delta_1 = 16(ac)^2(2+4r+r^2)>0$, $\Delta_2 = (ac)^6(412+2108r+\dots+39r^6)>0$, $\Delta_3 = (ac)^{12}(1378+118820r+\dots+36r^{12})>0$, and $\Delta_4 = (ac)^{22}r(848848+18327388r+\dots+972r^{17})\ge 0$ (all coefficients strictly positive integers).
+
+\textbf{Case $(6,4)$ ($4\times 4\oplus 1\times 1$, $\lambda_6=2, k=2$).} With $v_{\mathrm{even}}=(1,b^2,b^4,b^6)^T$ and $v_{\mathrm{odd}}=(b^3)$:
+\[
+G_{6,\mathrm{odd}}(a,c) = \big[(a-c)^2(a^4+2a^3c+44a^2c^2+2ac^3+c^4)\big] \ge 0,
+\]
+and symmetric $4\times 4$ even block $G_{6,\mathrm{even}}(a,c)$ given by:
+\begin{align*}
+  G_{0,0} &= 2a^{12} + 2a^{10}c^2 + 2a^8c^4 - 10a^6c^6 + 2a^4c^8 + 2a^2c^{10} + 2c^{12}, \\
+  G_{0,2} &= 2a^{10} + 2a^8c^2 - 5a^6c^4 - 5a^4c^6 + 2a^2c^8 + 2c^{10}, \quad G_{0,4} = 2a^8 + a^6c^2 - 7a^4c^4 + a^2c^6 + 2c^8, \\
+  G_{0,6} &= a^6 - a^3c^3 + c^6, \quad G_{2,2} = 2a^8 + 31a^6c^2 - 2a^4c^4 + 31a^2c^6 + 2c^8, \\
+  G_{2,4} &= 2a^6 + a^4c^2 - 41a^3c^3 + a^2c^4 + 2c^6, \quad G_{2,6} = a^4 - 29a^2c^2 + c^4, \\
+  G_{4,4} &= 9a^4 + 4a^2c^2 + 9c^4, \quad G_{4,6} = 7a^2 + 7c^2, \quad G_{6,6} = 12.
+\end{align*}
+Its trailing minors in $r$ are $\Delta_1 = 12>0$, $\Delta_2=(ac)^2(68+236r+59r^2)>0$, $\Delta_3=(ac)^6(74+15126r+\dots+89r^6)>0$, and $\Delta_4=(ac)^{12}r(42920+1202052r+\dots+2581r^9)\ge 0$.
+
+\textbf{Case $(8,4)$ ($5\times 5\oplus 2\times 2$, $\lambda_8=4, k=2$).} With $v_{\mathrm{even}}=(1,b^2,b^4,b^6,b^8)^T$ and $v_{\mathrm{odd}}=(b^3,b^5)^T$:
+\[
+G_{8,\mathrm{odd}}(a,c) = \begin{pmatrix}
+24a^8c^2 + 116a^6c^4 + 116a^4c^6 + 24a^2c^8 & -34a^6c^2 - 212a^4c^4 - 34a^2c^6 \\
+-34a^6c^2 - 212a^4c^4 - 34a^2c^6 & 30a^6 + 110a^4c^2 + 110a^2c^4 + 30c^6
+\end{pmatrix} \succeq 0,
+\]
+and symmetric $5\times 5$ pure-integer even block $G_{8,\mathrm{even}}(a,c)$ given by:
+\begin{align*}
+  G_{0,0} &= 4a^{16}+4a^{14}c^2+4a^{12}c^4+4a^{10}c^6-25a^8c^8+4a^6c^{10}+4a^4c^{12}+4a^2c^{14}+4c^{16}, \\
+  G_{0,2} &= 4a^{14}+4a^{12}c^2+4a^{10}c^4-11a^8c^6-11a^6c^8+4a^4c^{10}+4a^2c^{12}+4c^{14}, \\
+  G_{0,4} &= 4a^{12}+4a^{10}c^2+4a^8c^4-21a^6c^6+4a^4c^8+4a^2c^{10}+4c^{12}, \\
+  G_{0,6} &= 4a^{10}+2a^8c^2+5a^6c^4-30a^5c^5+5a^4c^6+2a^2c^8+4c^{10}, \quad G_{0,8} = 2a^8-8a^4c^4+2c^8, \\
+  G_{2,2} &= 4a^{12}+4a^{10}c^2+55a^8c^4+18a^6c^6+55a^4c^8+4a^2c^{10}+4c^{12}, \\
+  G_{2,4} &= 4a^{10}-4a^8c^2-21a^6c^4-110a^5c^5-21a^4c^6-4a^2c^8+4c^{10}, \\
+  G_{2,6} &= 4a^8+2a^6c^2+34a^5c^3-70a^4c^4+34a^3c^5+2a^2c^6+4c^8, \\
+  G_{2,8} &= 2a^6+8a^4c^2-24a^3c^3+8a^2c^4+2c^6, \\
+  G_{4,4} &= 12a^8+74a^6c^2+212a^5c^3-328a^4c^4+212a^3c^5+74a^2c^6+12c^8, \\
+  G_{4,6} &= -a^6+25a^4c^2-116a^3c^3+25a^2c^4-c^6, \quad G_{4,8} = -51a^2c^2, \\
+  G_{6,6} &= 25a^4-14a^2c^2+25c^4, \quad G_{6,8} = 15a^2+15c^2, \quad G_{8,8} = 29.
+\end{align*}
+All five trailing minors of $G_{8,\mathrm{even}}$ and both trailing minors of $G_{8,\mathrm{odd}}$ have strictly positive integer coefficients in $r$ (Table~\ref{tab:m4_summary}), with $\Delta_1,\dots,\Delta_4>0$ everywhere and $\Delta_5 = (ac)^{20}r(101671680+\dots)\ge 0$.
+
+\begin{remark}[Universal Even-$(2m,4)$ Odd-Block Collapse Law]
+Across $n=2,4,6,8$ (and numerically at $n=10$), the odd block never requires the full odd basis $\{b,b^3,\dots,b^{n-1}\}$: for $n=4m+2$ a $1\times 1$ scalar odd block $\{b^{n/2}\}$ suffices, whereas for $n=4m$ a $2\times 2$ odd block $\{b^{n/2-1},b^{n/2+1}\}$ suffices. Moreover, dropping the odd block ($k=1$) is \emph{impossible} even when $4\mid n$ ($\lambda_{\min}(G_{4,\mathrm{even}}(1,1))\le -6.02$, $\lambda_{\min}(G_{8,\mathrm{even}}(1,1))\le -16.75$): the square-root odd block is structurally essential to supply positive $(a^{2m+1}c^{2m-1}+a^{2m-1}c^{2m+1})$ cross terms to the middle diagonal entry.
+\end{remark}
+
+\section{Complete Resolution of $m=3$ for All $n\ge 1$, $n\to 0^+$, and $n\to\infty$}
+
+\subsection{Explicit All-Dimension Proofs for $n\to 0^+$ and $1\le n\le 6$}
+\begin{itemize}
+  \item \textbf{Logarithmic limit $n\to 0^+$}: The Loewner integral kernel $K_0(u,v) = \int_0^1 \frac{(u-1)(v-1)}{(tu+1-t)(tv+1-t)}\,t(1-t^2)\,\mathrm{d}t\succeq 0$ satisfies $\sum_{\mathrm{cyc}} K_0(y/x,z/x) = 3\Phi_0(x,y,z)$ identically.
+  \item \textbf{Cases $n=1,2$}: $K_1(u,v) = \frac{(u^{1/3}-1)(2u^{1/3}+1)(v^{1/3}-1)(2v^{1/3}+1)}{u^{1/3}v^{1/3}(u^{1/3}+v^{1/3}+1)}\succeq 0$ and pullback $K_2(u,v)=\frac{1}{2}K_1(u^2,v^2)+\frac{1}{2}K_1(u^{-1},v^{-1})\succeq 0$.
+  \item \textbf{Cases $n=3,4,6$ (computer-free Frobenius SOS identities)}: Letting $TY+YT=TX-XT$ and $T^{-1}Z+ZT^{-1}=X$ ($Z=\int_0^\infty e^{-sT^{-1}}Xe^{-sT^{-1}}\,\mathrm{d}s\ge 0$), exact basis-free identities hold for all $d\ge 1$ and $A>0, B\ge 0$:
+  \begin{align*}
+    \mathcal{A}_{3,3}(A,B)-\Tr((AB)^3) &= \tfrac{3}{10}\big(\|SX^{1/2}\|_F^2 + 8\|A^{-1/2}RZ^{1/2}\|_F^2\big) \quad (T=A, X=A^{1/2}BA^{1/2}),\\
+    \mathcal{A}_{4,3}(A,B)-\Tr((A^{4/3}B)^3) &= \tfrac{1}{5}\|M_1X^{1/2}\|_F^2 + \tfrac{1}{5}\|M_2X^{1/2}\|_F^2 + \|M_3X^{1/2}\|_F^2 + \|YX^{1/2}\|_F^2 + 4\|T^{-1/2}YZ^{1/2}\|_F^2,\\
+    \mathcal{A}_{6,3}(A,B)-\Tr((A^2B)^3) &= \tfrac{3}{28}\big(\|H_1X^{1/2}\|_F^2 + 7\|H_2X^{1/2}\|_F^2 + 4\|RX^{1/2}\|_F^2 + 28\|A^{-1/2}G_1Z^{1/2}\|_F^2 + 12\|A^{-1/2}RZ^{1/2}\|_F^2\big),
+  \end{align*}
+  with exact symbolic residual $0$ and equality iff $AB=BA$.
+  \item \textbf{Case $n=5$}: Exact rational two-Cauchy PSD kernel ($\frac{ts}{t+s}$ and $\frac{t^3s^3}{t^3+s^3}$, common denominator $1680$, 19 strictly positive exact rational Sylvester minors, symbolic residual $0$).
+\end{itemize}
+
+\subsection{Closure of All $n\ge 7$ and $n=\infty$ via 3D Rigorous Certification}
+Setting $\varepsilon := 1/n \in [0,1/7]$ and scaled log-coordinates $s,t>0$ ($v=t-s>0$), the rank-1 extremal block-diagonal split $K_{1,\varepsilon}(s,t) = F_3(\min(s,t),\max(s,t);\varepsilon) - L_{1,\varepsilon}(\max(s,t),|t-s|)$ and $\rho(s,t;\varepsilon) := -\partial_s\partial_t\big(e^{-(s+t)/6}K_{1,\varepsilon}(s,t)\big)$ yield the exact integral representation
+\[
+K_{1,\varepsilon}(s,t) = \iint_{0<a<b<\infty} \Big(e^{s/6}\mathbf{1}_{[a,b]}(s)\Big)\Big(e^{t/6}\mathbf{1}_{[a,b]}(t)\Big)\,\rho(a,b;\varepsilon)\,\mathrm{d}a\,\mathrm{d}b.
+\]
+The hybrid certifier \texttt{certify\_all\_n\_m3.py} (Python \texttt{mpmath.iv} for Regions 1--3 + C++ \texttt{certify\_region4.cpp} compiled with \texttt{-frounding-math -fno-fast-math} using hardware IEEE-754 \texttt{FE\_UPWARD} rounding and exact outward-rounded coefficients \texttt{cp\_table.h} for Region 4) certifies $\rho(s,s+v;\varepsilon)>0$ across all of $(0,\infty)^2\times[0,1/7]$ from scratch in \textbf{$21.53\,\mathrm{s}$} with \textbf{236,083 certified boxes} and \textbf{0 uncertified boxes} (Table~\ref{tab:3d_cert}), proving Theorem~\ref{thm:min3}.
+
+\begin{table}[!htbp]
+\centering
+\caption{From-scratch 3D certification of $\rho(s,s+v;\varepsilon)>0$ on $(0,\infty)^2\times[0,1/7]$ (total runtime $21.53\,\mathrm{s}$, \texttt{UNCERTIFIED\_BOXES = 0}).}
+\label{tab:3d_cert}
+\begin{tabularx}{\linewidth}{lXlrrr}
+\toprule
+Region / Sub-block & Domain $(s,v)$ ($\varepsilon\in[0,1/7]$) & Target & Boxes & Min Lower Bound & Time \\
+\midrule
+Region 1 & $[0,0.25]\times[0,0.25]$ & $\partial_s\rho$ & 2 & $3.3660\times 10^{-3}$ & $0.05\,\mathrm{s}$ \\
+Region 2a / 2b & $(0,\infty)\times[30,\infty)$ & $e^{v/6}\partial_s\rho$, $\psi_\varepsilon e^{v/6}\rho$ & analytic & $7.2090\times 10^{-3}$ & $0.02\,\mathrm{s}$ \\
+Region 3 & $[25,\infty)\times(0,30]$ & $\rho/q_\varepsilon(t)$ & 1,305 & $1.2540\times 10^{-5}$ & $12.00\,\mathrm{s}$ \\
+Region 4a--4b2 & $[0,1]\times[0,30]$ & $\partial_s\rho$ & 30,918 & $8.0166\times 10^{-8}$ & $2.31\,\mathrm{s}$ \\
+Region 4c1--4d2b & $[1,25]\times[0,30]$ & $\rho$ & 203,858 & $4.4019\times 10^{-8}$ & $7.17\,\mathrm{s}$ \\
+\midrule
+\textbf{Total} & \textbf{$(0,\infty)^2\times[0,1/7]$} & \textbf{$\rho > 0$} & \textbf{236,083} & \textbf{Uncertified $= 0$} & \textbf{$21.53\,\mathrm{s}$} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Exact Odd-$m$ Polynomial Obstruction and Higher-$m$ Outlook}
+
+\begin{proof}[Proof of Theorem~\ref{thm:odd_obstruction}]
+Because $m=2r+1$ is odd, only a single vertex $x_1$ is fixed in $P(x_1;p;q)$, so every homogeneous nonnegative weight in $x_1$ is a single monomial $c_\alpha x_1^{u_\alpha}$ ($c_\alpha > 0$). In each summand $c_\alpha x_1^{u_\alpha} f_\alpha(x_1;p) f_\alpha(x_1;q)$, the sole way to produce the geometric-mean monomial $(x_1\cdots x_m)^k$ is via the diagonal pairing of the single monomial $x_1^{r_\alpha - rk}(x_2\cdots x_{r+1})^k$ in $f_\alpha(x_1;p)$ with $x_1^{r_\alpha - rk}(x_m\cdots x_{r+2})^k$ in $f_\alpha(x_1;q)$. Its coefficient in $P$ (and therefore in the $m$-fold cyclic average of $P$) is $\sum_\alpha c_\alpha \gamma_\alpha^2 \ge 0$. By contrast, the coefficient of $(x_1\cdots x_m)^k$ in $\binom{n+m-1}{m-1}\Phi_{n,m}(x_1^s,\dots,x_m^s)$ is strictly negative---equal to $-\binom{n+m-1}{m-1}$ when $m\nmid n$, or $1-\binom{n+m-1}{m-1}$ when $m\mid n$ (e.g., $-125$ for $(5,5)$)---a contradiction.
+\end{proof}
+
+Even $m=2r$ escapes Theorem~\ref{thm:odd_obstruction} because fixing two antipodal vertices $(x_1, x_{r+1})$ permits homogeneous nonnegative weights with negative cross terms, namely $(x_1-x_{r+1})^2 = x_1^2+x_{r+1}^2-2x_1x_{r+1}\ge 0$, which directly generate negative geometric-mean monomials inside rank-1 PSD blocks (as in our $m=4$ proofs and for $(1,6),(2,6)$ at $D=12$). Meanwhile, discrete-grid SDP tests (up to $N=5$, $25\times 25$ blocks) confirm that cyclic-shifted path PSD kernels \emph{do} exist for $(5,5)$ (residual $1.02\times 10^{-12}$) and $(6,6)$ (residual $1.58\times 10^{-11}$); by Theorem~\ref{thm:odd_obstruction}, any all-dimension path-kernel proof of $(5,5)$ must use a non-polynomial (Cauchy, Stieltjes, or integral) kernel. By finite-rank spectral approximation, all dimension-independent theorems above extend directly to trace-class positive operators on separable Hilbert spaces. The smallest remaining open cases of \href{https://openquantumproblems.com/p/M14}{OQP M14} are now $(7,4)/(4,7)$ and $(5,5)$.
+
+\begin{thebibliography}{9}
+\bibitem{Hagele2026}
+D.~H\"agele, \emph{On the lower bound of the refined Bessis--Moussa--Villani conjecture}, preprint (Oct 29, 2026), \href{https://arxiv.org/html/2611.00129v1}{arXiv:2611.00129}.
+
+\bibitem{OQP_M14}
+Open Quantum Problems, \emph{Problem M14: Refined Bessis--Moussa--Villani conjecture} (IQOQI Problem \#40), \url{https://openquantumproblems.com/p/M14}.
+
+\bibitem{IQOQI40}
+IQOQI Vienna, \emph{Open Quantum Problems List (Problem \#40)}, \url{https://oqp.iqoqi.oeaw.ac.at/open-quantum-problems}.
+
+\bibitem{ChaLee2026}
+M.~Cha and H.~H.~Lee, \emph{Counterexample to the upper bound of the refined BMV conjecture}, preprint (Mar 2026), \href{https://arxiv.org/abs/2603.19927}{arXiv:2603.19927}.
+
+\bibitem{Dinh2026}
+T.~H.~Dinh, \emph{On the refined BMV conjecture and spectral bridges}, preprint (May 2026), \href{https://arxiv.org/html/2605.17782v1}{arXiv:2605.17782}.
+
+\bibitem{DinhLeVuong2026}
+T.~H.~Dinh, C.~T.~Le, and B.~K.~Vuong, \emph{Pinching lower bounds for the refined BMV average trace}, preprint (Oct 2026), \href{https://arxiv.org/html/2610.31851v1}{arXiv:2610.31851}.
+\end{thebibliography}
+
+\end{document}

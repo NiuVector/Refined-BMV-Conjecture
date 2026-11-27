@@ -2,7 +2,14 @@
 
 Research on the refined Bessis–Moussa–Villani (BMV) lower bound, focusing on the full (m=3) family in arbitrary finite matrix dimension, using positive-semidefinite kernel decompositions and computer-assisted interval certificates.
 
-## Latest update — 2026-11-27
+## Manuscripts and Lean development — 2026-11-27
+
+- [Consolidated manuscript](manuscripts/refined_bmv_m3_m4_arxiv.pdf) and [TeX source](manuscripts/refined_bmv_m3_m4_arxiv.tex). They include the cubic family, the quartic cases with n in {1, 2, 3, 4, 5, 6, 8}, and an obstruction for odd-order polynomial certificates.
+- [Quartic Gram certificate verifier](verify_m4_family_integer_gram.py). Run `python verify_m4_family_integer_gram.py` for exact symbolic checks and the included matrix experiments.
+- [Lean project](lean/README.md) and [build and dependency audit](lean/verification.txt). The unconditional proofs cover the cubic cases with n from 1 to 6 and the seven quartic cases above. The larger cubic cases and the Duhamel lower bound depend on the stated scalar sign condition in Lean.
+- [Cubic manuscript](manuscripts/refined_bmv_m3_arxiv.pdf), [earlier cubic and (4,4) manuscript](manuscripts/refined_bmv_m3_and_44_arxiv.pdf), and supplementary notes on [(3,3)](manuscripts/refined_bmv_33_all_d.tex) and [(n,3)](manuscripts/refined_bmv_n3_all_d.tex). The [exploratory scripts](experiments/) provide numerical checks.
+
+## Uniform m = 3 interval certificate
 
 The new uniform certification code targets all integers n >= 7 and the third-order Duhamel limit simultaneously, by studying a scalar mixed-derivative kernel on the continuous parameter domain:
 
@@ -10,7 +17,7 @@ The new uniform certification code targets all integers n >= 7 and the third-ord
 - The Python driver covers the small-argument region and analytic tails using interval arithmetic.
 - The C++ verifier handles the compact three-dimensional region; the coefficient enclosures are supplied in cp_table.h.
 
-Together with the earlier finite-order results for n = 1,...,6, this is a proposed computer-assisted route to the entire m = 3 family in all finite dimensions. The new certification and its analytic assumptions require independent verification; the uploaded manuscript predates this update. No claim is made that the full refined BMV conjecture (arbitrary n and m) has been resolved.
+Together with the earlier finite-order results for n = 1,...,6, this is a proposed computer-assisted route to the entire m = 3 family in all finite dimensions. The new certification and its analytic assumptions require independent verification; the consolidated manuscript above describes this update. No claim is made that the full refined BMV conjecture (arbitrary n and m) has been resolved.
 
 ## Files
 

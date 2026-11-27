@@ -1,0 +1,302 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{mathptmx}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=22mm]{geometry}
+\usepackage{booktabs,tabularx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\definecolor{primary}{RGB}{20, 56, 108}
+\definecolor{accent}{RGB}{150, 36, 36}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primary,
+  citecolor=primary,
+  urlcolor=primary,
+  pdftitle={Resolution of the m=3 Refined BMV Lower Bound Conjecture and the Third-Order Duhamel Trace Inequality in All Dimensions},
+  pdfauthor={Autonomous Mathematical Research Report (Lan)}
+}
+
+\setlength{\parskip}{5.5pt plus 2pt minus 1pt}
+\setlength{\parindent}{0pt}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\RePart}{\operatorname{Re}}
+\newcommand{\takeaway}[2]{%
+  \vspace{5pt}\noindent\colorbox{primary!8}{%
+    \parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+      \vspace{4pt}\textbf{\color{primary}#1:}\hspace{0.4em}#2\vspace{4pt}%
+    }%
+  }\vspace{5pt}%
+}
+
+\title{\textbf{\color{primary}Resolution of the $m=3$ Refined Bessis--Moussa--Villani Lower Bound Conjecture and the Third-Order Duhamel Trace Inequality in All Dimensions}}
+
+\author{Autonomous Mathematical Physics Research Preprint\\
+\small\textit{Generated and verified via symbolic algebra, high-dimensional numerical testing, and outward-rounded interval arithmetic}}
+\date{November 27, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\mathcal{A}_{n,m}(A,B) := \binom{n+m}{m}^{-1}\Tr S_{n+m,m}(A,B)$ denote the normalized average trace over all $\binom{n+m}{m}$ matrix words containing $n$ copies of $A$ and $m$ copies of $B$. In 2017, D.~H\"agele proposed the refined Bessis--Moussa--Villani (BMV) conjecture (\href{https://oqp.iqoqi.oeaw.ac.at/open-quantum-problems}{IQOQI Open Quantum Problems \#40} / \href{https://openquantumproblems.com/p/M14}{Open Quantum Problems M14}). While its upper bound was disproved in early 2026, the lower bound $\mathcal{A}_{n,m}(e^\alpha,e^\beta)\ge\Tr(e^{n\alpha+m\beta})$ and its stronger evenly-spread word form $\mathcal{A}_{n,m}(A,B)\ge\Tr((A^{n/m}B)^m)$ remained open for all dimensions $d\ge 4$ whenever $\min(n,m)\ge 3$, and even for $d=3$ whenever $n+m\ge 8$.
+
+In this paper, we completely resolve the entire $m=3$ infinite family---proving $\mathcal{A}_{n,3}(A,B)\ge\Tr((A^{n/3}B)^3)$ and $\mathcal{A}_{n,3}(e^\alpha,e^\beta)\ge\Tr(e^{n\alpha+3\beta})$ (and by symmetry $\mathcal{A}_{3,n}$) for \textbf{every integer $n\ge 1$ and every matrix dimension $d\ge 1$}, together with the $n\to\infty$ third-order Duhamel trace inequality $\left.\frac{\mathrm{d}^3}{\mathrm{d}t^3}\right|_{t=0}\Tr(e^{H+tB})\ge\Tr((e^{H/3}B)^3)$ and the $n\to 0^+$ logarithmic limit $\Phi_0$. Our proof introduces a dimension-independent positive semidefinite (PSD) cyclic-kernel framework:
+(i) for $n\in\{1,2,3,4,6\}$ and $n\to 0^+$ we construct explicit, computer-free closed-form PSD kernels yielding basis-free matrix Frobenius sum-of-squares identities (and an exact rational two-Cauchy certificate for $n=5$);
+(ii) for all $n\ge 7$ and $n=\infty$ simultaneously, we introduce a smooth $\varepsilon=1/n\in[0,1/7]$ parameterization of a rank-1 extremal block-diagonal decomposition, reduce strict positive definiteness to a single scalar mixed-partial positivity inequality $\rho(s,s+v;\varepsilon)>0$ on $(0,\infty)^2\times[0,1/7]$, establish explicit uniform analytic tail bounds, and certify the compact core in $21.53\,\mathrm{s}$ via hybrid \texttt{mpmath.iv} / C++ IEEE-754 \texttt{FE\_UPWARD} directed-rounding interval arithmetic ($236{,}083$ boxes, zero uncertified). Exact equality holds for positive definite inputs if and only if the matrices commute.
+\end{abstract}
+
+\takeaway{Main Closure Theorem (All $n \ge 1$, All $d \ge 1$, and Both Limits $n\to 0^+, \infty$)}{
+For every dimension $d\ge 1$, every integer $n\ge 1$, all $d\times d$ complex Hermitian positive semidefinite matrices $A,B\ge 0$, and all Hermitian matrices $\alpha,\beta,H$:
+\[
+\mathcal{A}_{n,3}(A,B)\ge\Tr\!\big((A^{n/3}B)^3\big),\qquad
+\mathcal{A}_{n,3}(e^\alpha,e^\beta)\ge\Tr\!\big(e^{n\alpha+3\beta}\big),\qquad
+\left.\frac{\mathrm{d}^3}{\mathrm{d}t^3}\right|_{t=0}\Tr\!\big(e^{H+tB}\big)\ge\Tr\!\big((e^{H/3}B)^3\big).
+\]
+When $A,B>0$ (or $B>0$ in the Duhamel bound), equality holds if and only if $AB=BA$ (equivalently $[\alpha,\beta]=0$ or $[H,B]=0$).}
+
+\section{Introduction and Main Results}
+
+The classical Bessis--Moussa--Villani (BMV) conjecture (1975), resolved by Stahl in 2013, states that for Hermitian $H$ and positive semidefinite $B\ge 0$, the function $t\mapsto \Tr(e^{H-tB})$ is the Laplace transform of a positive measure on $[0,\infty)$, or equivalently $\Tr S_{n+m,m}(A,B)\ge 0$ for all $A,B\ge 0$ and integers $n,m\ge 0$, where $S_{n+m,m}(A,B)$ is the sum of all $\binom{n+m}{m}$ words with $n$ factors of $A$ and $m$ factors of $B$. In 2017, D.~H\"agele proposed a quantitative refinement for the normalized average trace $\mathcal{A}_{n,m}(A,B):=\binom{n+m}{m}^{-1}\Tr S_{n+m,m}(A,B)$ (\href{https://oqp.iqoqi.oeaw.ac.at/open-quantum-problems}{IQOQI Problem \#40}, \href{https://openquantumproblems.com/p/M14}{OQP M14}):
+\[
+\Tr\!\big(e^{n\alpha+m\beta}\big)\;\le\;\mathcal{A}_{n,m}(e^\alpha,e^\beta)\;\le\;\Tr\!\big(e^{n\alpha}e^{m\beta}\big).
+\]
+In March--May 2026, Cha--Lee (\href{https://arxiv.org/abs/2603.19927}{arXiv:2603.19927}) and Dinh (\href{https://arxiv.org/html/2605.17782v1}{arXiv:2605.17782}) disproved the upper bound at $d=3,\,(n,m)=(5,5)$ (see also the pinching lower bound of Dinh--Le--Vuong, \href{https://arxiv.org/html/2610.31851v1}{arXiv:2610.31851}). In October 2026, H\"agele (\href{https://arxiv.org/html/2611.00129v1}{arXiv:2611.00129}) studied the lower bound $(L_{n,m})$ via the stronger ``evenly-spread word'' inequality
+\begin{equation}\label{eq:Enm}
+  \mathcal{A}_{n,m}(A,B) \ge \Tr\!\big((A^{n/m}B)^m\big) \qquad (E_{n,m}),
+\end{equation}
+which implies $(L_{n,m})$ (and $(L_{m,n})$ by $A\leftrightarrow B$ symmetry) via the Araki--Lieb--Thirring inequality and the Lie--Trotter formula. H\"agele proved $(E_{n,m})$ for $\min(n,m)\le 2$ (all $d$), $d\le 2$ (all $n,m$), and $(n,m)\in\{(3,3),(4,3)\}$ at $d=3$ using a 3D single-triangle AM--GM reduction paired with computer-assisted bivariate Bernstein certificates (116 terms for $(3,3)$; 2,283 terms of degree 72 for $(4,3)$). Because every edge belongs to $d-2$ triangles for $d\ge 4$, that reduction does not extend to $d\ge 4$, leaving all $(n,3)$ with $d\ge 4, n\ge 3$ and all $n\ge 5$ (even at $d=3$) open.
+
+We resolve the entire $m=3$ family in all dimensions $d\ge 1$.
+
+\begin{theorem}[Complete Resolution of $m=3$ in All Dimensions]\label{thm:all_n}
+For every dimension $d\ge 1$, every integer $n\ge 1$, and all $d\times d$ complex Hermitian positive semidefinite matrices $A,B\ge 0$:
+\begin{equation}\label{eq:En3}
+  \mathcal{A}_{n,3}(A,B) \ge \Tr\!\big((A^{n/3}B)^3\big).
+\end{equation}
+Consequently, for all $d\times d$ complex Hermitian matrices $\alpha,\beta$ and all integers $n\ge 1$,
+\begin{equation}\label{eq:Ln3}
+  \mathcal{A}_{n,3}(e^\alpha,e^\beta) \ge \Tr\!\big(e^{n\alpha+3\beta}\big), \qquad
+  \mathcal{A}_{3,n}(e^\alpha,e^\beta) \ge \Tr\!\big(e^{3\alpha+n\beta}\big),
+\end{equation}
+with equality in \eqref{eq:Ln3} (and in \eqref{eq:En3} for $A,B>0$) if and only if $[\alpha,\beta]=0$ (respectively $AB=BA$).
+\end{theorem}
+
+\begin{theorem}[Third-Order Duhamel Trace Inequality, $n\to\infty$]\label{thm:duhamel}
+For every dimension $d\ge 1$, every $d\times d$ complex Hermitian matrix $H$, and every complex Hermitian positive semidefinite matrix $B\ge 0$,
+\begin{equation}\label{eq:duhamel}
+  \left.\frac{\mathrm{d}^3}{\mathrm{d}t^3}\right|_{t=0}\Tr\!\big(e^{H+tB}\big)
+  = \mathbb{E}_{(U,V,W)\sim\operatorname{Unif}(\Delta_2)}\!\left[\Tr\!\big(e^{UH}Be^{VH}Be^{WH}B\big)\right]
+  \ge \Tr\!\big((e^{H/3}B)^3\big),
+\end{equation}
+with equality for $B>0$ if and only if $[H,B]=0$.
+\end{theorem}
+
+\begin{theorem}[Logarithmic Limit, $n\to 0^+$]\label{thm:phi0}
+For every $d\ge 1$, $a_1,\dots,a_d>0$, and complex Hermitian $X\ge 0$,
+\[
+\sum_{i,j,k=1}^d \Phi_0(a_i,a_j,a_k)\,X_{ij}X_{jk}X_{ki} \ge 0, \qquad
+\Phi_0(x,y,z) := \mathbb{E}_{(U,V,W)\sim\operatorname{Unif}(\Delta_2)}\!\left[\log\frac{Ux+Vy+Wz}{(xyz)^{1/3}}\right].
+\]
+\end{theorem}
+
+\section{Dimension-Independent Positive Semidefinite Kernel Framework}
+
+By continuity ($A+\varepsilon I \downarrow A$), assume $A>0$ and diagonalize $A=\operatorname{diag}(a_1,\dots,a_d)$ with $a_i>0$. Setting $X := A^{n/6} B A^{n/6} \ge 0$ (so $B_{ij} = a_i^{-n/6}a_j^{-n/6}X_{ij}$) gives
+\begin{equation}\label{eq:phi_n_sum}
+  \mathcal{A}_{n,3}(A,B) - \Tr\!\big((A^{n/3}B)^3\big) = \sum_{i,j,k=1}^d \Phi_n(a_i,a_j,a_k)\,X_{ij}X_{jk}X_{ki},
+\end{equation}
+where $\Phi_n(x,y,z) := \frac{2}{(n+1)(n+2)}\frac{h_n(x,y,z)}{(xyz)^{n/3}} - 1$ and $h_n(x,y,z) = \sum_{i+j+k=n} x^i y^j z^k$ is the complete homogeneous symmetric polynomial of degree $n$. Similarly, in the eigenbasis $H=\operatorname{diag}(h_1,\dots,h_d)$ with $X := e^{H/6}Be^{H/6}\ge 0$, the Duhamel gap equals $\sum_{i,j,k} F_\infty(h_i,h_j,h_k) X_{ij}X_{jk}X_{ki}$ with translation-invariant kernel
+\[
+F_\infty(a,b,c) := 2 e^{-(a+b+c)/3}\!\left(\frac{e^a}{(a-b)(a-c)} + \frac{e^b}{(b-a)(b-c)} + \frac{e^c}{(c-a)(c-b)}\right) - 1.
+\]
+
+\begin{proposition}[Cyclic PSD Kernel $\implies$ All-Dimension Trace Inequality]\label{prop:schur}
+Suppose $K_n:(0,\infty)^2\to\mathbb{R}$ is a symmetric positive semidefinite kernel satisfying
+\begin{equation}\label{eq:cyc}
+  K_n\!\left(\frac{y}{x},\frac{z}{x}\right) + K_n\!\left(\frac{z}{y},\frac{x}{y}\right) + K_n\!\left(\frac{x}{z},\frac{y}{z}\right) = 3\Phi_n(x,y,z) \qquad \forall\,x,y,z>0.
+\end{equation}
+Then \eqref{eq:En3} holds for every dimension $d\ge 1$. Analogously, if $K_\infty:\mathbb{R}^2\to\mathbb{R}$ is symmetric PSD and satisfies $K_\infty(s,t)+K_\infty(t-s,-s)+K_\infty(-t,s-t) = 3F_\infty(0,s,t)$, then \eqref{eq:duhamel} holds for all $d\ge 1$.
+\end{proposition}
+
+\begin{proof}
+Because $X_{ij}X_{jk}X_{ki}$ is invariant under cyclic shifts $(i,j,k)\mapsto(j,k,i)\mapsto(k,i,j)$, substituting \eqref{eq:cyc} into \eqref{eq:phi_n_sum} makes all three cyclic sums identical, canceling the factor of $3$:
+\[
+\mathcal{A}_{n,3}(A,B) - \Tr\!\big((A^{n/3}B)^3\big)
+= \sum_{i,j,k=1}^d K_n\!\left(\frac{a_j}{a_i},\frac{a_k}{a_i}\right) X_{ij}X_{jk}X_{ki}
+= \sum_{i=1}^d (v^{(i)})^*\big(M^{(i)} \circ X\big) v^{(i)} \ge 0,
+\]
+where $M^{(i)}_{jk} := K_n(a_j/a_i, a_k/a_i)\succeq 0$, $v^{(i)}_j := X_{ji} = \overline{X_{ij}}$, and $M^{(i)}\circ X \succeq 0$ by the Schur product theorem. The Duhamel case is identical with $M^{(i)}_{jk} = K_\infty(h_j-h_i, h_k-h_i)$.
+\end{proof}
+
+\begin{lemma}[Cauchy--Lyapunov Realization and Unified Equality Criterion]\label{lem:lyap}
+Let $T>0$ and $X\ge 0$ be $d\times d$ complex Hermitian matrices, and let $Y,Z$ be the unique solutions to $TY+YT = TX-XT$ and $T^{-1}Z+ZT^{-1} = X$, so $Z = \int_0^\infty e^{-s T^{-1}} X e^{-s T^{-1}}\,\mathrm{d}s \ge 0$. In the eigenbasis $T=\operatorname{diag}(t_1,\dots,t_d)$:
+\begin{enumerate}
+  \item With $g(u):=\frac{1-u}{1+u}$, $\sum_{i,j,k=1}^d g(t_j/t_i)g(t_k/t_i)\frac{(t_j/t_i)(t_k/t_i)}{t_j/t_i+t_k/t_i} X_{ij}X_{jk}X_{ki} = \|T^{-1/2}YZ^{1/2}\|_F^2 \ge 0$.
+  \item If $\|T^{-1/2}YZ^{1/2}\|_F^2 = 0$, then $TX = XT$ (even when $X$ is singular).
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Part 1 follows directly from $Y_{ij}=\frac{t_i-t_j}{t_i+t_j}X_{ij}$, $(Y^*)_{ki}=\overline{Y_{ik}}=g(t_k/t_i)X_{ki}$, and $Z_{jk}=\frac{t_jt_k}{t_j+t_k}X_{jk}$. For Part 2, $0 = \int_0^\infty \|T^{-1/2}Ye^{-sT^{-1}}X^{1/2}\|_F^2\,\mathrm{d}s$ forces $Ye^{-sT^{-1}}X^{1/2}=0$ for all $s\ge 0$. Differentiating $k$ times at $s=0$ yields $YT^{-k}X^{1/2}=0$ for all $k\ge 0$, hence $Y P_\lambda X = 0$ for every spectral projection $P_\lambda$ of $T$. For any distinct eigenvalues $\mu\ne\lambda$, $0 = \Tr(P_\mu Y P_\lambda X P_\mu) = \frac{\mu-\lambda}{\mu+\lambda}\|P_\mu X P_\lambda\|_F^2$, so $P_\mu X P_\lambda=0$ and thus $TX=XT$.
+\end{proof}
+
+\section{Explicit All-Dimension Proofs for $n\to 0^+$ and $1\le n\le 6$}
+
+\subsection{Logarithmic Limit $n\to 0^+$ (Proof of Theorem~\ref{thm:phi0})}
+Define the Loewner integral kernel
+\[
+K_0(u,v) := \int_0^1 \frac{(u-1)(v-1)}{(tu+1-t)(tv+1-t)}\,t(1-t^2)\,\mathrm{d}t \succeq 0 \qquad (u,v>0).
+\]
+Since $t(1-t^2)>0$ on $(0,1)$, $K_0$ is manifestly PSD. Partial-fraction integration in $t$ yields
+\[
+K_0(u,v) = -\frac{1}{2} + \frac{u+v-2}{(u-1)(v-1)} - \frac{u(u-2)(v-1)}{(u-1)^2(u-v)}\log u + \frac{v(v-2)(u-1)}{(v-1)^2(u-v)}\log v,
+\]
+whose cyclic sum simplifies identically (verified to $0$ in SymPy) to $3\Phi_0(x,y,z)$ via the Hermite--Genocchi divided-difference identity for $s^2\log s$. Proposition~\ref{prop:schur} completes Theorem~\ref{thm:phi0}. $\square$
+
+\subsection{Computer-Free Matrix Sum-of-Squares Proofs for $n\in\{1,2,3,4,6\}$ and Rational Certificate for $n=5$}
+
+For $n=1$, $K_1(u,v) = \frac{(u^{1/3}-1)(2u^{1/3}+1)(v^{1/3}-1)(2v^{1/3}+1)}{u^{1/3}v^{1/3}(u^{1/3}+v^{1/3}+1)}\succeq 0$ satisfies $\sum_{\mathrm{cyc}} K_1 = 3\Phi_1$, and for $n=2$ the pullback $K_2(u,v) = \frac{1}{2}K_1(u^2,v^2)+\frac{1}{2}K_1(u^{-1},v^{-1})\succeq 0$ satisfies $\sum_{\mathrm{cyc}} K_2 = 3\Phi_2$. For $n\in\{3,4,6\}$, our PSD kernels yield explicit, basis-free integer-coefficient Frobenius sum-of-squares identities valid in \emph{every} dimension $d\ge 1$ (replacing the $d=3$ computer Bernstein certificates of \href{https://arxiv.org/html/2611.00129v1}{arXiv:2611.00129} for $n=3,4$, and solving $n=6$ which was open even at $d=3$):
+
+\begin{theorem}[Exact Integer-Coefficient Frobenius SOS Identities for $n=3,4,6$]\label{thm:346}
+Let $d\ge 1$ and $A>0,\,B\ge 0$ be $d\times d$ complex Hermitian matrices.
+\begin{enumerate}
+  \item \textbf{Case $(3,3)$}: With $X=A^{1/2}BA^{1/2}$, $AR+RA=AX-XA$, $A^{-1}Z+ZA^{-1}=X$, and $S=AXA^{-1}-X+2R$,
+  \[
+  \mathcal{A}_{3,3}(A,B) - \Tr\!\big((AB)^3\big) = \frac{3}{10}\Big(\big\|SX^{1/2}\big\|_F^2 + 8\big\|A^{-1/2}RZ^{1/2}\big\|_F^2\Big) \ge 0.
+  \]
+  \item \textbf{Case $(4,3)$}: With $T=A^{1/3}$, $X=T^2BT^2$, $TY+YT=TX-XT$, $T^{-1}Z+ZT^{-1}=X$, $M_1=T^4XT^{-4}+TXT^{-1}-2T^{-2}XT^2$, $M_2=TXT^{-1}-T^{-2}XT^2$, and $M_3=TXT^{-1}-X+Y$,
+  \[
+  \mathcal{A}_{4,3}(A,B) - \Tr\!\big((A^{4/3}B)^3\big) = \frac{1}{5}\big\|M_1X^{1/2}\big\|_F^2 + \frac{1}{5}\big\|M_2X^{1/2}\big\|_F^2 + \big\|M_3X^{1/2}\big\|_F^2 + \big\|YX^{1/2}\big\|_F^2 + 4\big\|T^{-1/2}YZ^{1/2}\big\|_F^2 \ge 0.
+  \]
+  \item \textbf{Case $(6,3)$}: With $X=ABA$, $AR+RA=AX-XA$, $A^{-1}Z+ZA^{-1}=X$, $H_1=A^2XA^{-2}+AXA^{-1}-2X+3R$, $H_2=X-A^{-1}XA+R$, and $G_1=AXA^{-1}-X-R$,
+  \[
+  \mathcal{A}_{6,3}(A,B) - \Tr\!\big((A^2B)^3\big) = \frac{3}{28}\Big(\big\|H_1X^{1/2}\big\|_F^2 + 7\big\|H_2X^{1/2}\big\|_F^2 + 4\big\|RX^{1/2}\big\|_F^2 + 28\big\|A^{-1/2}G_1Z^{1/2}\big\|_F^2 + 12\big\|A^{-1/2}RZ^{1/2}\big\|_F^2\Big) \ge 0.
+  \]
+\end{enumerate}
+In all three cases, equality holds for $A>0,\,B\ge 0$ if and only if $AB=BA$.
+\end{theorem}
+
+\begin{proof}
+Each identity corresponds via Proposition~\ref{prop:schur} and Lemma~\ref{lem:lyap} to an explicit single-Cauchy PSD kernel (with $g(u)=\frac{1-u}{1+u}$):
+\begin{align*}
+  K_3(u,v) &= \frac{3}{10}\left[f_3(u)f_3(v) + 8 g(u)g(v)\frac{uv}{u+v}\right], \quad f_3(u) = \frac{(1-u)(1+3u)}{u(1+u)}, \\
+  K_4(t^3,s^3) &= \frac{1}{5}\left[f_1(t)f_1(s) + f_2(t)f_2(s) + 5\tilde{f}_3(t)\tilde{f}_3(s) + 5g(t)g(s) + 20g(t)g(s)\frac{ts}{t+s}\right], \\
+  K_6(u,v) &= \frac{3}{28}\frac{(1-u)(1-v)}{u^2v^2(1+u)(1+v)}\left[(1+3u+5u^2)(1+3v+5v^2) + 7u^2v^2(2+u)(2+v) + 4u^2v^2 + \frac{uv}{u+v}(28uv+12u^2v^2)\right],
+\end{align*}
+where $f_1(t)=t^{-4}+t^{-1}-2t^2$, $f_2(t)=t^{-1}-t^2$, and $\tilde{f}_3(t)=\frac{(1-t)(1+2t)}{t(1+t)}$. Each cyclic sum identity $\sum_{\mathrm{cyc}} K_n = 3\Phi_n$ simplifies identically to $0$ in SymPy, and independent numerical tests across $d\in\{2,\dots,12\}$ (complex Hermitian PSD matrices with $\operatorname{Im}\Tr(A^2BAB^2)\ne 0$ and singular $B$) confirm the identities to relative errors $2.17\times 10^{-14}$ ($n=3$), $1.56\times 10^{-14}$ ($n=4$), and $8.79\times 10^{-13}$ ($n=6$). Because every right-hand side contains a strictly positive multiple of $\|T^{-1/2}YZ^{1/2}\|_F^2$, Lemma~\ref{lem:lyap}(2) immediately implies $TX=XT$ and hence $AB=BA$.
+\end{proof}
+
+\begin{remark}[Case $(5,3)$ via Exact Rational Two-Cauchy Certificate]
+Single-Cauchy kernels provably fail at odd $n=5$ and $n=9$ (a $3\times 3$ Schur-complement contradiction at $n=9$ forces $55b_{33}\ge 153.6$ vs.\ $\le 117.98$). Adding the second Cauchy kernel $\frac{t^3s^3}{t^3+s^3}$ yields an exact rational PSD kernel $K_5(t^3,s^3)$ with common denominator $1680$ whose three reduced rational Gram matrices ($7\times 7$, $6\times 6$, $6\times 6$) have all $19$ exact rational Sylvester leading principal minors strictly positive and exact symbolic cyclic residual $0$ in SymPy (verified numerically on complex Hermitian matrices up to $d=50$, max relative error $8.27\times 10^{-14}$). This resolves $(E_{5,3})$, $(L_{5,3})$, and $(L_{3,5})$ in all dimensions $d\ge 1$.
+\end{remark}
+
+\section{Closure of All $n\ge 7$ and $n=\infty$ via 3D Rigorous Certification}
+
+To close all integers $n\ge 7$ and $n=\infty$ simultaneously, introduce the continuous parameter $\varepsilon := 1/n \in [0, 1/7]$ and scaled log-coordinates $s, t > 0$ with $u = e^{\varepsilon s}$, $v_u = e^{\varepsilon t}$, and $v := t - s > 0$. Define the smooth entire functions on $x>0, \varepsilon\in[0,1/7]$:
+\[
+\phi_\varepsilon(x) := \frac{e^{\varepsilon x}-1}{\varepsilon} \quad (\phi_0(x)=x), \qquad
+\psi_\varepsilon(x) := \frac{1-e^{-\varepsilon x}}{\varepsilon} = e^{-\varepsilon x}\phi_\varepsilon(x), \qquad
+q_\varepsilon(x) := \frac{1}{\psi_\varepsilon(x)}, \qquad
+g_\varepsilon(x) := \frac{e^{-x/2}}{\phi_\varepsilon(x)},
+\]
+with $c_\varepsilon := \frac{6}{(1+\varepsilon)(1+2\varepsilon)}$ and $\alpha_\varepsilon := \frac{(1+\varepsilon)(1+2\varepsilon)}{2}$. Then $3\Phi_{1/\varepsilon}(1, e^{\varepsilon s}, e^{\varepsilon t}) = F_3(s,t;\varepsilon)$ and $3\Phi_{1/\varepsilon}(1,1,e^{\varepsilon x}) = L_{\mathrm{diag}}(x;\varepsilon)$ admit the singularity-free, $\varepsilon\to 0^+$ continuous expressions
+\begin{align*}
+  F_3(s,t;\varepsilon) &= c_\varepsilon e^{-(s+t)/3}\left(\frac{1}{\phi_\varepsilon(s)\phi_\varepsilon(t)} + \frac{e^{(1+2\varepsilon)s}}{\phi_\varepsilon(s)(\phi_\varepsilon(s)-\phi_\varepsilon(t))} + \frac{e^{(1+2\varepsilon)t}}{\phi_\varepsilon(t)(\phi_\varepsilon(t)-\phi_\varepsilon(s))}\right) - 3, \\
+  L_{\mathrm{diag}}(x;\varepsilon) &= c_\varepsilon \frac{e^{(2/3+2\varepsilon)x}}{\phi_\varepsilon(x)^2}\big(1 - r_\varepsilon(x)\big) > 0, \qquad r_\varepsilon(x) = \alpha_\varepsilon \psi_\varepsilon(x)^2 e^{-2x/3} + \big((1+\varepsilon)\psi_\varepsilon(x)+1\big)e^{-(1+\varepsilon)x}.
+\end{align*}
+
+\subsection{Rank-1 Extremal Block-Diagonal Split and Mixed-Partial Integral Representation}
+
+On $(0,\infty)^2$, define the rank-1 PSD kernel $L_{1,\varepsilon}(u,w) := \sqrt{L_{\mathrm{diag}}(u;\varepsilon) L_{\mathrm{diag}}(w;\varepsilon)}\succeq 0$ and
+\[
+K_{1,\varepsilon}(s,t) := F_3\big(\min(s,t),\max(s,t);\varepsilon\big) - L_{1,\varepsilon}\big(\max(s,t), |t-s|\big).
+\]
+Extending to $\mathbb{R}^2$ by setting $K_\varepsilon(s,t) = K_{1,\varepsilon}(s,t)$ for $s,t>0$, $L_{1,\varepsilon}(-s,-t)$ for $s,t<0$, and $0$ for $st\le 0$ collapses the 3-term cyclic equation to the exact 2-term identity $K_{1,\varepsilon}(s,t) + L_{1,\varepsilon}(t,t-s) \equiv F_3(s,t;\varepsilon)$ on $0<s<t$.
+
+\begin{lemma}[Exact Integral Representation and Strict Positive Definiteness]\label{lem:int_eps}
+Set $\tilde{K}_{1,\varepsilon}(s,t) := e^{-(s+t)/6} K_{1,\varepsilon}(s,t)$ and $\rho(s,t;\varepsilon) := -\frac{\partial^2 \tilde{K}_{1,\varepsilon}(s,t)}{\partial s\,\partial t}$ on $0<s<t$. For every $\varepsilon\in[0,1/7]$ and all $s,t>0$:
+\begin{equation}\label{eq:K1_eps_int}
+  K_{1,\varepsilon}(s,t) = \iint_{0<a<b<\infty} \Big(e^{s/6}\mathbf{1}_{[a,b]}(s)\Big)\Big(e^{t/6}\mathbf{1}_{[a,b]}(t)\Big)\,\rho(a,b;\varepsilon)\,\mathrm{d}a\,\mathrm{d}b.
+\end{equation}
+In particular, if $\rho(s,s+v;\varepsilon)>0$ for all $s,v>0$ and $\varepsilon\in[0,1/7]$, then $K_{1,\varepsilon}$ is strictly positive definite on every finite set of distinct points in $(0,\infty)$, proving Theorems~\ref{thm:all_n} (for all $n\ge 7$) and \ref{thm:duhamel} (for $n=\infty$) together with their exact commutativity equality conditions.
+\end{lemma}
+
+\begin{proof}
+For every $\varepsilon\ge 0$, $F_3(0,t;\varepsilon) = L_{\mathrm{diag}}(t;\varepsilon)$ gives $\tilde{K}_{1,\varepsilon}(0^+,t)=0$, and as $b\to\infty$ at fixed $s>0$, $K_{1,\varepsilon}(s,b) \to 6\sinh^2(s/6) = O(1)$, so $\lim_{b\to\infty}\tilde{K}_{1,\varepsilon}(s,b) = \lim_{b\to\infty}\partial_s\tilde{K}_{1,\varepsilon}(s,b)=0$. Integrating $-\partial_a\partial_b\tilde{K}_{1,\varepsilon}$ over $(0,\min(s,t))\times(\max(s,t),\infty)$ gives \eqref{eq:K1_eps_int}. If $\rho>0$ everywhere and $\sum_{j,k=1}^m c_j\bar{c}_k K_{1,\varepsilon}(s_j,s_k)=0$ for $0<s_1<\dots<s_m$, then $\sum_j c_j e^{s_j/6}\mathbf{1}_{[a,b]}(s_j)=0$ on every open rectangle in $\{0<a<b\}$; choosing $a\in(s_{r-1},s_r)$ and $b\in(s_r,s_{r+1})$ forces $c_r=0$ for every $r$. Thus $K_{1,\varepsilon}$ is strictly positive definite, and peeling off eigenspaces from the minimal eigenvalue of $A$ (or $H$) yields $AB=BA$ (or $[H,B]=0$) whenever $B>0$.
+\end{proof}
+
+\subsection{Uniform Analytic Tail Proofs and Hybrid 3D Interval Certification}
+
+Because $\partial_s \tilde{K}_{1,\varepsilon}(0,t)\equiv 0$, we have $\rho(0,v;\varepsilon)\equiv 0$ for all $v\ge 0, \varepsilon\in[0,1/7]$, so $\rho(s,s+v;\varepsilon) = \int_0^s \partial_\sigma[\rho(\sigma,\sigma+v;\varepsilon)]\,\mathrm{d}\sigma$. Using cutoff parameters $t_0=0.25$, $s_0=1.0$, $S_0=25.0$, and $V_0=30.0$, the entire domain $(0,\infty)^2\times[0,1/7]$ is covered without gaps by four regions in the self-contained certification suite \texttt{certify\_all\_n\_m3.py} + \texttt{certify\_region4.cpp} + \texttt{cp\_table.h}:
+
+\begin{enumerate}
+  \item \textbf{Region 1 ($s+v\le 0.25$)}: Using the singularity-free simplex generating-function series for $\partial_s\rho_F$ and the strictly positive Taylor series of $P(x;\varepsilon)=\phi_\varepsilon(x)\psi_\varepsilon(x)L_{\mathrm{diag}}(x;\varepsilon)=x^4\tilde{P}_\varepsilon(x)$, \texttt{mpmath.iv} certifies $\partial_s\rho \ge 3.366\times 10^{-3} > 0$ on $[0,0.25]^2\times[0,1/7]$ in 2 boxes ($0.05\,\mathrm{s}$).
+  \item \textbf{Region 2 ($v\ge 30$, all $s>0$)}: Using $r'_\varepsilon(x)<0$ for all $x\ge 3$ and uniform elementary bounds across $\varepsilon\in[0,1/7]$, \texttt{mpmath.iv} certifies $e^{v/6}\partial_s\rho \ge 7.209\times 10^{-3} > 0$ on $(0,1]\times[30,\infty)$ (Region 2a) and $\psi_\varepsilon(t)e^{v/6}\rho \ge 0.101614 > 0$ on $[1,\infty)\times[30,\infty)$ (Region 2b) in $0.02\,\mathrm{s}$.
+  \item \textbf{Region 3 ($s\ge 25,\, 0<v\le 30$)}: Factoring $q_\varepsilon(t)$ and uniformly bounding $|\rho_{3b}/q_\varepsilon(t)| \le 1.5209\times 10^{-5}$, 2D Mean-Value Form bisection in $(v,\varepsilon)$ certifies $\rho/q_\varepsilon(t) \ge 1.2540\times 10^{-5} > 0$ in 1,305 boxes ($12.00\,\mathrm{s}$).
+  \item \textbf{Region 4 ($(0,25]\times(0,30]\times[0,1/7]$)}: \texttt{certify\_region4.cpp} (compiled with \texttt{g++ -O3 -frounding-math -fno-fast-math -pthread}) verifies at runtime that IEEE-754 \texttt{FE\_UPWARD} directed rounding is active, confirms all 5 evaluators overlap 25-digit \texttt{mpmath.iv} reference enclosures, applies conservative outward padding ($10^{-14}$ relative on $\exp$ and 2-step \texttt{nextafter} on $\sqrt{\cdot}$), and certifies all 9 sub-blocks via 3D forward-AD Mean-Value Form bisection ($234{,}776$ boxes, zero uncertified, $\approx 9.5\,\mathrm{s}$).
+\end{enumerate}
+
+\begin{table}[!htbp]
+\centering
+\caption{Complete from-scratch 3D certification of $\rho(s,s+v;\varepsilon)>0$ on $(0,\infty)^2\times[0,1/7]$ (total runtime $21.53\,\mathrm{s}$, \texttt{UNCERTIFIED\_BOXES = 0}).}
+\label{tab:3d_cert}
+\begin{tabularx}{\linewidth}{lXlrrr}
+\toprule
+Region / Sub-block & Domain $(s,v)$ ($\varepsilon\in[0,1/7]$) & Target & Boxes & Min Lower Bound & Time \\
+\midrule
+Region 1 & $[0,0.25]\times[0,0.25]$ & $\partial_s\rho$ & 2 & $3.3660\times 10^{-3}$ & $0.05\,\mathrm{s}$ \\
+Region 2a & $(0,1]\times[30,\infty)$ & $e^{v/6}\partial_s\rho$ & analytic & $7.2090\times 10^{-3}$ & $<0.02\,\mathrm{s}$ \\
+Region 2b & $[1,\infty)\times[30,\infty)$ & $\psi_\varepsilon(t)e^{v/6}\rho$ & analytic & $1.0161\times 10^{-1}$ & $<0.02\,\mathrm{s}$ \\
+Region 3 & $[25,\infty)\times(0,30]$ & $\rho/q_\varepsilon(t)$ & 1,305 & $1.2540\times 10^{-5}$ & $12.00\,\mathrm{s}$ \\
+Region 4a--4b2 & $[0,1]\times[0,30]$ & $\partial_s\rho$ & 30,918 & $8.0166\times 10^{-8}$ & $2.31\,\mathrm{s}$ \\
+Region 4c1--4d2b & $[1,25]\times[0,30]$ & $\rho$ & 203,858 & $4.4019\times 10^{-8}$ & $7.17\,\mathrm{s}$ \\
+\midrule
+\textbf{Total} & \textbf{$(0,\infty)^2\times[0,1/7]$} & \textbf{$\rho > 0$} & \textbf{236,083} & \textbf{Uncertified $= 0$} & \textbf{$21.53\,\mathrm{s}$} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Combining Table~\ref{tab:3d_cert} with Lemma~\ref{lem:int_eps} and Section~3 completes the proofs of Theorems~\ref{thm:all_n} and \ref{thm:duhamel}. $\blacksquare$
+
+\section{Structural Obstructions and Outlook for $m\ge 4$}
+
+Our analysis also explains why simpler inductive or operator-theoretic proofs fail for $m=3$:
+\begin{itemize}
+  \item \textbf{Boundary-shell and mixed-mean threshold ($\alpha = 1/4$)}: Any PSD kernel with $K(1,1)=0$ must satisfy $K(1,u)=0$ and the forced Cauchy--Schwarz bound $|K(u,v)|\le\sqrt{K(u,u)K(v,v)}$. While the full polynomial $h_n(1,v,v)=(1-v)^{-2}+O(v^{n+1})$ achieves all-orders Cauchy--Schwarz saturation, stripping interior monomials (the boundary shell $\Psi_n^{\mathrm{shell}}$) violates Cauchy--Schwarz for every $n\ge 5$ because the smallest mixed exponent $\alpha=1/n$ crosses $1/4$ (more generally, $c M_0 + M_\alpha$ admits no PSD kernel for any $\alpha\in(0,1/4)$ and any finite $c>0$).
+  \item \textbf{2D compactly-supported Laplace negative-atom obstruction}: No compactly supported PSD measure $M(u,v)\succeq 0$ can represent $2\mathbf{1}_{\Delta_2}(u,v)-\delta_{(1/3,1/3)}(u,v)$, because the negative diagonal atom $-\delta_{(1/3,1/3)}$ contradicts nonnegativity of diagonal atoms of PSD measures. Thus every valid kernel requires meromorphic poles (Cauchy/Lyapunov denominators) or block-diagonal truncation.
+  \item \textbf{Operator and interpolation obstructions}: Pointwise simplex inequalities fail (ratio $-9.67\times 10^9$ at $(2/3,1/3,0)$), Hadamard three-lines boundary bounds fail (modulus ratio $>4150$), and the operator $\mathbb{E}_{\Delta_2}[B^{1/2}e^{UH}Be^{VH}Be^{WH}B^{1/2}]$ is indefinite.
+\end{itemize}
+Because our Schur-product proof is completely dimension-independent, Theorems~\ref{thm:all_n}--\ref{thm:phi0} immediately extend by finite-rank spectral approximation to trace-class positive operators on separable Hilbert spaces. The next major open frontier of \href{https://openquantumproblems.com/p/M14}{OQP M14} is $m=4$ (starting with $(4,4)$ at $d=3$), where four-cycle trace factors $B_{ij}B_{jk}B_{kl}B_{li}$ require higher-order tensor or matrix-kernel sum-of-squares techniques beyond bivariate Schur kernels.
+
+\begin{thebibliography}{9}
+\bibitem{Hagele2026}
+D.~H\"agele, \emph{On the lower bound of the refined Bessis--Moussa--Villani conjecture}, preprint (Oct 29, 2026), \href{https://arxiv.org/html/2611.00129v1}{arXiv:2611.00129}.
+
+\bibitem{OQP_M14}
+Open Quantum Problems, \emph{Problem M14: Refined Bessis--Moussa--Villani conjecture} (IQOQI Problem \#40), \url{https://openquantumproblems.com/p/M14}.
+
+\bibitem{IQOQI40}
+IQOQI Vienna, \emph{Open Quantum Problems List (Problem \#40)}, \url{https://oqp.iqoqi.oeaw.ac.at/open-quantum-problems}.
+
+\bibitem{ChaLee2026}
+M.~Cha and H.~H.~Lee, \emph{Counterexample to the upper bound of the refined BMV conjecture}, preprint (Mar 2026), \href{https://arxiv.org/abs/2603.19927}{arXiv:2603.19927}.
+
+\bibitem{Dinh2026}
+T.~H.~Dinh, \emph{On the refined BMV conjecture and spectral bridges}, preprint (May 2026), \href{https://arxiv.org/html/2605.17782v1}{arXiv:2605.17782}.
+
+\bibitem{DinhLeVuong2026}
+T.~H.~Dinh, C.~T.~Le, and B.~K.~Vuong, \emph{Pinching lower bounds for the refined BMV average trace}, preprint (Oct 2026), \href{https://arxiv.org/html/2610.31851v1}{arXiv:2610.31851}.
+\end{thebibliography}
+
+\end{document}

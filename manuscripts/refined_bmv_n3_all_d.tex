@@ -1,0 +1,272 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage{babel}
+\babelprovide[import, main]{chinese}
+\babelfont{rm}{Noto Serif CJK SC}
+\babelfont{sf}{Noto Sans CJK SC}
+\babelfont{tt}{DejaVu Sans Mono}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=21mm]{geometry}
+\usepackage{booktabs,tabularx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\definecolor{primary}{RGB}{24, 62, 112}
+\definecolor{accent}{RGB}{168, 44, 44}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primary,
+  citecolor=primary,
+  urlcolor=primary,
+  pdftitle={All-Dimension Matrix Sum-of-Squares Proofs for the (n,3) Refined BMV Lower Bound Conjecture},
+  pdfauthor={Lan (Autonomous Mathematical Research Agent)}
+}
+
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\parindent}{0pt}
+
+\newtheorem{theorem}{定理}
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{proposition}[theorem]{命题}
+\newtheorem{corollary}[theorem]{推论}
+\theoremstyle{remark}
+\newtheorem{remark}{注}
+
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\RePart}{\operatorname{Re}}
+\newcommand{\takeaway}[2]{%
+  \vspace{6pt}\noindent\colorbox{primary!8}{%
+    \parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+      \vspace{4pt}\textbf{\color{primary}#1：}\hspace{0.4em}#2\vspace{4pt}%
+    }%
+  }\vspace{6pt}%
+}
+
+\title{\textbf{\color{primary}精化 BMV 下界猜想在 $(n,3)$ 情形下的全维度正半定核与精确矩阵平方和证明}\\[4pt]
+\large\textit{All-Dimension Positive Semidefinite Kernels and Exact Matrix Sum-of-Squares Proofs for the $(n,3)$ Refined BMV Lower Bound Conjecture}}
+
+\author{自主数学物理研究报告（由智能体“岚”独立推导并通过符号与高维数值复核）}
+\date{2026年11月27日}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+针对 2017 年 Daniel H\"agele 提出的精化 Bessis--Moussa--Villani（BMV）下界猜想（\href{https://oqp.iqoqi.oeaw.ac.at/open-quantum-problems}{IQOQI Open Quantum Problems \#40} / \href{https://openquantumproblems.com/p/M14}{Open Quantum Problems M14}），截至 2026 年 11 月的已知前沿（\href{https://arxiv.org/html/2611.00129v1}{arXiv:2611.00129}）仅通过三维计算机有理 Bernstein 证书覆盖至 $d=3,\,n+m\le 7$，所有 $d\ge 4$ 的 $(n,3)$（$n\ge 3$）以及连 $d=3$ 也未解决的 $(5,3),(6,3)$ 均处于开放状态。
+
+本文建立了一套与矩阵维度 $d$ 无关的\textbf{正半定对称核分解（PSD Kernel Decomposition）与 Lyapunov 矩阵平方和框架}，将任意维度 $d\ge 1$ 下的强均匀词不等式 $(E_{n,3})$ 归约至三维齐次零次有理函数 $\Phi_n(x,y,z)$ 的正半定核轮换分解 $\sum_{\mathrm{cyc}} K_n(y/x, z/x) = 3\Phi_n(x,y,z)$。借助该框架，我们给出了\textbf{$(3,3)$、$(4,3)/(3,4)$ 与 $(6,3)/(3,6)$ 在全部维度 $d\ge 1$ 下的纯解析、整系数、无须计算机辅助的精确 Frobenius 平方和证明}，并统一证明了充要等号条件（$AB=BA$ 与 $[\alpha,\beta]=0$）。此外，针对奇数阶单 Cauchy 核的结构性障碍（$n=5,9$），我们引入双 Cauchy/完全单调 Laplace 核，进一步构造出 $(5,3)/(3,5)$ 在全维度 $d\ge 1$ 下的精确有理正半定证书（19 个 Sylvester 顺序主子式严格为正），从而在任意维度 $d\ge 1$ 上一举打通全部 $1\le n\le 6$ 的 $(E_{n,3})$、$(L_{n,3})$ 与 $(L_{3,n})$。
+\end{abstract}
+
+\takeaway{核心突破总览（全维度 $d \ge 1$ 覆盖至 $n \le 6$）}{在 \href{https://openquantumproblems.com/p/M14}{OQP M14} 列表中，此前 $(3,3),(4,3)$ 在 $d\ge 4$ 开放，$(5,3),(6,3)$ 甚至在 $d=3$ 也开放。本文利用统一的正半定核框架：
+(1) 为 $(3,3)$、$(4,3)$ 与 $(6,3)$ 给出完全显式、整系数、2 项或 5 项的精确矩阵 Frobenius 平方和恒等式，彻底取代原有 116 项与 2,283 项计算机证书并打通全部维度 $d\ge 1$；
+(2) 通过双 Cauchy 精确有理核打通 $(5,3)$ 的全部维度 $d\ge 1$；
+(3) 对所有已证情形给出统一的三行谱投影等号刻画（$[\alpha,\beta]=0$）。}
+
+\section{全维度正半定核框架}
+
+对 $d\times d$ 复 Hermitian 半正定矩阵 $A,B\ge 0$ 及整数 $n\ge 1$，记 $\mathcal{A}_{n,3}(A,B) := \binom{n+3}{3}^{-1}\Tr S_{n+3,3}(A,B)$ 为所有包含 $n$ 个 $A$ 与 $3$ 个 $B$ 的词矩阵的平均迹。精化 BMV 下界猜想 $(L_{n,3})$ 与强均匀词不等式 $(E_{n,3})$ 分别写作
+\[
+\mathcal{A}_{n,3}(e^\alpha, e^\beta) \ge \Tr\!\big(e^{n\alpha + 3\beta}\big) \quad (L_{n,3}),
+\qquad
+\mathcal{A}_{n,3}(A,B) \ge \Tr\!\big((A^{n/3}B)^3\big) \quad (E_{n,3}).
+\]
+由 Araki--Lieb--Thirring 不等式与 Lie--Trotter 公式（见 \href{https://arxiv.org/html/2611.00129v1}{arXiv:2611.00129} 引理 1--2），$(E_{n,3})$ 直接蕴含 $(L_{n,3})$，且由对称性 $\mathcal{A}_{n,3}(A,B)=\mathcal{A}_{3,n}(B,A)$ 同时蕴含 $(L_{3,n})$。
+
+\begin{proposition}[全维度正半定核归约]\label{prop:framework}
+设 $n\ge 1$，定义对称齐次零次函数
+\[
+\Phi_n(x,y,z) := \frac{2}{(n+1)(n+2)}\frac{h_n(x,y,z)}{(xyz)^{n/3}} - 1, \qquad x,y,z > 0,
+\]
+其中 $h_n(x,y,z) = \sum_{i+j+k=n} x^i y^j z^k$ 为三元完全齐次对称多项式。若 $(0,\infty)^2$ 上存在对称正半定核 $K_n(u,v) \succeq 0$ 满足三项轮换恒等式
+\begin{equation}\label{eq:cyc_master}
+  K_n\!\left(\frac{y}{x},\frac{z}{x}\right) + K_n\!\left(\frac{z}{y},\frac{x}{y}\right) + K_n\!\left(\frac{x}{z},\frac{y}{z}\right) = 3\Phi_n(x,y,z), \qquad \forall\, x,y,z > 0,
+\end{equation}
+则对任意维度 $d\ge 1$ 及任意 $d\times d$ 复 Hermitian 矩阵 $A > 0,\, B \ge 0$，令 $X := A^{n/6} B A^{n/6} \ge 0$ 并在 $A = \operatorname{diag}(a_1,\dots,a_d)$ 特征基下展开，有
+\begin{equation}\label{eq:master_sos}
+  \mathcal{A}_{n,3}(A,B) - \Tr\!\big((A^{n/3}B)^3\big)
+  = \sum_{i,j,k=1}^d K_n\!\left(\frac{a_j}{a_i},\frac{a_k}{a_i}\right) X_{ij} X_{jk} X_{ki} \ge 0.
+\end{equation}
+由此由连续性（$A+\varepsilon I \downarrow A$）即得 $(E_{n,3})$、$(L_{n,3})$ 与 $(L_{3,n})$ 在所有维度 $d\ge 1$ 下恒成立。
+\end{proposition}
+
+\begin{proof}
+由组合展开 $\mathcal{A}_{n,3}(A,B) = \frac{2}{(n+1)(n+2)}\sum_{i,j,k} h_n(a_i,a_j,a_k) B_{ij} B_{jk} B_{ki}$。代入 $B_{ij} = a_i^{-n/6} a_j^{-n/6} X_{ij}$ 得 $B_{ij}B_{jk}B_{ki} = (a_i a_j a_k)^{-n/3} X_{ij} X_{jk} X_{ki}$，从而 $\mathcal{A}_{n,3}(A,B) - \Tr((A^{n/3}B)^3) = \sum_{i,j,k}\Phi_n(a_i,a_j,a_k) X_{ij} X_{jk} X_{ki}$。利用 $X_{ij}X_{jk}X_{ki}$ 在 $(i,j,k)\mapsto(j,k,i)\mapsto(k,i,j)$ 下的轮换不变性与 \eqref{eq:cyc_master}，三项求和完全相等，消去因子 $3$ 即得 \eqref{eq:master_sos} 的等式。对每个固定 $i$，记实对称矩阵 $M^{(i)}_{jk} := K_n(a_j/a_i, a_k/a_i) \succeq 0$ 及列向量 $v^{(i)}_j := \overline{X_{ij}} = X_{ji}$，则
+\[
+\sum_{j,k=1}^d K_n\!\left(\frac{a_j}{a_i},\frac{a_k}{a_i}\right) X_{ij} X_{jk} X_{ki}
+= (v^{(i)})^* \big(M^{(i)} \circ X\big) v^{(i)} \ge 0,
+\]
+其中由 Schur 乘积定理，$M^{(i)} \succeq 0$ 与 $X \succeq 0$ 保证 Hadamard 积 $M^{(i)} \circ X \succeq 0$。对 $i=1,\dots,d$ 求和即证非负性。
+\end{proof}
+
+\begin{lemma}[Cauchy 核的 Lyapunov 平方和实现与统一等号判定]\label{lem:eq_unified}
+设 $T > 0$，$X \ge 0$ 为 $d\times d$ 复 Hermitian 矩阵，$Y, Z$ 分别为 Lyapunov 方程
+\[
+T Y + Y T = T X - X T, \qquad T^{-1} Z + Z T^{-1} = X \quad (\text{或 } T \tilde{Z} + \tilde{Z} T = T X T)
+\]
+的唯一解，其中 $Z = \int_0^\infty e^{-s T^{-1}} X e^{-s T^{-1}}\,\mathrm{d}s \ge 0$（$\tilde{Z} = Z$，两者在 $T$ 特征基下完全相同，元素均为 $\frac{t_j t_k}{t_j+t_k} X_{jk}$）。则：
+\begin{enumerate}
+  \item 在 $T = \operatorname{diag}(t_1,\dots,t_d)$ 特征基下，Cauchy 核项满足精确恒等式
+  \[
+  \sum_{i,j,k=1}^d \frac{1-t_j/t_i}{1+t_j/t_i}\frac{1-t_k/t_i}{1+t_k/t_i}\frac{(t_j/t_i)(t_k/t_i)}{t_j/t_i + t_k/t_i} X_{ij} X_{jk} X_{ki}
+  = \big\|T^{-1/2} Y Z^{1/2}\big\|_F^2 \ge 0.
+  \]
+  \item 若 $\|T^{-1/2} Y Z^{1/2}\|_F^2 = 0$，则必有 $T X = X T$（即使 $X$ 奇异亦然）。
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+第 1 部分由 $Y_{ij} = \frac{t_i-t_j}{t_i+t_j} X_{ij}$、$(Y^*)_{ki} = \frac{t_i-t_k}{t_i+t_k} X_{ki}$ 与 $\frac{(t_j/t_i)(t_k/t_i)}{t_j/t_i+t_k/t_i} = t_i^{-1}\frac{t_j t_k}{t_j+t_k}$ 直接验证。第 2 部分：若 $\|T^{-1/2} Y Z^{1/2}\|_F^2 = 0$，代入积分解 $Z = \int_0^\infty e^{-s T^{-1}} X e^{-s T^{-1}}\,\mathrm{d}s$ 得
+\[
+0 = \int_0^\infty \big\|T^{-1/2} Y e^{-s T^{-1}} X^{1/2}\big\|_F^2\,\mathrm{d}s.
+\]
+由被积函数非负连续知 $Y e^{-s T^{-1}} X^{1/2} = 0$ 对一切 $s \ge 0$ 成立。在 $s=0$ 处求任意 $k$ 阶导数得 $Y T^{-k} X^{1/2} = 0$（$\forall k\ge 0$），故对 $T^{-1}$ 的任意多项式 $p(T^{-1})$ 均有 $Y p(T^{-1}) X = 0$。取 $p(T^{-1}) = P_\lambda$（$T$ 对应特征值 $\lambda$ 的谱投影），则对任意特征值 $\mu \neq \lambda$，由 $P_\mu Y P_\lambda = \frac{\mu-\lambda}{\mu+\lambda} P_\mu X P_\lambda$ 得
+\[
+0 = \Tr(P_\mu Y P_\lambda X P_\mu) = \frac{\mu-\lambda}{\mu+\lambda}\big\|P_\mu X P_\lambda\big\|_F^2 \implies P_\mu X P_\lambda = 0.
+\]
+从而 $T X = X T$。
+\end{proof}
+
+\section{$(3,3)$、$(4,3)$ 与 $(6,3)$ 的全维度整系数精确平方和定理}
+
+本节给出三个此前在 $d\ge 4$（以及 $(6,3)$ 在全部 $d\ge 3$）均处于开放状态的核心情形的\textbf{显式、整系数、无须计算机辅助}的全维度证明。记 $g(u) := \frac{1-u}{1+u}$。
+
+\begin{theorem}[$(3,3)$ 全维度两项平方和定理]\label{thm:33}
+设 $d\ge 1$，$A > 0,\, B \ge 0$。令 $X := A^{1/2} B A^{1/2} \ge 0$，$A R + R A = A X - X A$，$A^{-1} Z + Z A^{-1} = X$，$S := A X A^{-1} - X + 2R$。则
+\[
+\mathcal{A}_{3,3}(A,B) - \Tr\!\big((AB)^3\big)
+= \frac{3}{10}\Big(\big\|S X^{1/2}\big\|_F^2 + 8\big\|A^{-1/2} R Z^{1/2}\big\|_F^2\Big) \ge 0.
+\]
+\end{theorem}
+
+\begin{proof}
+取对称正半定核
+\[
+K_3(u,v) := \frac{3}{10}\left[f_3(u)f_3(v) + 8\,g(u)g(v)\,\frac{uv}{u+v}\right], \qquad
+f_3(u) := \frac{(1-u)(1+3u)}{u(1+u)} = (u^{-1}-1) + 2g(u).
+\]
+直接有理化简（或借辅助核 $K_0(u,v)=(\tfrac{1}{u}-1)(\tfrac{1}{v}-1)(1+2u+2v)$ 加零轮换修正核）验证 $\sum_{\mathrm{cyc}} K_3(y/x, z/x) = 3\Phi_3(x,y,z)$ 恒成立。在 $A$ 特征基下 $S_{ij} = f_3(a_j/a_i) X_{ij}$、$R_{ij} = g(a_j/a_i) X_{ij}$，由命题~\ref{prop:framework} 与引理~\ref{lem:eq_unified} 立得结论。
+\end{proof}
+
+\begin{theorem}[$(4,3)$ 与 $(3,4)$ 全维度五项整系数平方和定理]\label{thm:43}
+设 $d\ge 1$，$A > 0,\, B \ge 0$。令 $T := A^{1/3} > 0$，$X := T^2 B T^2 = A^{2/3} B A^{2/3} \ge 0$，记 $T Y + Y T = T X - X T$ 与 $T^{-1} Z + Z T^{-1} = X$ 的唯一解为 $Y$ 与 $Z \ge 0$，并定义
+\[
+M_1 := T^4 X T^{-4} + T X T^{-1} - 2 T^{-2} X T^2, \qquad
+M_2 := T X T^{-1} - T^{-2} X T^2, \qquad
+M_3 := T X T^{-1} - X + Y.
+\]
+则有精确恒等式
+\[
+\mathcal{A}_{4,3}(A,B) - \Tr\!\big((A^{4/3}B)^3\big)
+= \frac{1}{5}\big\|M_1 X^{1/2}\big\|_F^2 + \frac{1}{5}\big\|M_2 X^{1/2}\big\|_F^2 + \big\|M_3 X^{1/2}\big\|_F^2 + \big\|Y X^{1/2}\big\|_F^2 + 4\big\|T^{-1/2} Y Z^{1/2}\big\|_F^2 \ge 0.
+\]
+\end{theorem}
+
+\begin{proof}
+令 $x = p^3,\, y = q^3,\, z = r^3$（$p,q,r>0$），并令 $\Psi_4(p,q,r) := 15\Phi_4(p^3,q^3,r^3) = \frac{h_4(p^3,q^3,r^3)}{(pqr)^4} - 15$。定义四个显式有理函数
+\[
+f_1(u) = u^{-4} + u^{-1} - 2u^2, \quad f_2(u) = u^{-1} - u^2, \quad
+f_3(u) = \frac{(1-u)(1+2u)}{u(1+u)} = (u^{-1}-1) + g(u), \quad f_4(u) = g(u),
+\]
+及正半定核
+\[
+\widetilde{K}_4(u,v) := \frac{1}{5}\left[f_1(u)f_1(v) + f_2(u)f_2(v) + 5 f_3(u)f_3(v) + 5 f_4(u)f_4(v) + 20 f_4(u)f_4(v)\,\frac{uv}{u+v}\right].
+\]
+该核具有清晰的两步结构分解：首先减去两项无分母 Laurent 秩-1 项，将 $\Psi_4$ 精确化简为 5 倍三次 AM--GM 残差：
+\[
+\Psi_4(p,q,r) - \sum_{\mathrm{cyc}}\left[f_1\!\left(\frac{q}{p}\right)f_1\!\left(\frac{r}{p}\right) + f_2\!\left(\frac{q}{p}\right)f_2\!\left(\frac{r}{p}\right)\right] = 5\left(\frac{p^3+q^3+r^3}{pqr} - 3\right);
+\]
+其次，其余三项恰好构成三次 AM--GM 残差的精确正半定核分解：
+\[
+\sum_{\mathrm{cyc}}\left[f_3\!\left(\frac{q}{p}\right)f_3\!\left(\frac{r}{p}\right) + f_4\!\left(\frac{q}{p}\right)f_4\!\left(\frac{r}{p}\right) + 4 f_4\!\left(\frac{q}{p}\right)f_4\!\left(\frac{r}{p}\right)\frac{qr/p^2}{(q+r)/p}\right] = \frac{p^3+q^3+r^3}{pqr} - 3.
+\]
+两式合并即得 $\sum_{\mathrm{cyc}} \widetilde{K}_4(q/p, r/p) = \frac{1}{5}\Psi_4(p,q,r) = 3\Phi_4(p^3,q^3,r^3)$。将 $K_4(u,v) := \widetilde{K}_4(u^{1/3}, v^{1/3})$ 代入命题~\ref{prop:framework}，并在 $T = A^{1/3}$ 特征基下逐项识别 $(M_\ell)_{ij} = f_\ell(t_j/t_i)X_{ij}$ 与引理~\ref{lem:eq_unified}，即证得精确 5 项平方和恒等式。
+\end{proof}
+
+\begin{theorem}[$(6,3)$ 与 $(3,6)$ 全维度五项整系数平方和定理]\label{thm:63}
+设 $d\ge 1$，$A > 0,\, B \ge 0$。令 $X := A B A \ge 0$，记 $A R + R A = A X - X A$ 与 $A^{-1} Z + Z A^{-1} = X$ 的唯一解为 $R$ 与 $Z \ge 0$，并定义
+\[
+H_1 := A^2 X A^{-2} + A X A^{-1} - 2X + 3R, \qquad
+H_2 := X - A^{-1} X A + R, \qquad
+G_1 := A X A^{-1} - X - R.
+\]
+则有精确恒等式
+\[
+\mathcal{A}_{6,3}(A,B) - \Tr\!\big((A^2 B)^3\big)
+= \frac{3}{28}\Big(\big\|H_1 X^{1/2}\big\|_F^2 + 7\big\|H_2 X^{1/2}\big\|_F^2 + 4\big\|R X^{1/2}\big\|_F^2 + 28\big\|A^{-1/2} G_1 Z^{1/2}\big\|_F^2 + 12\big\|A^{-1/2} R Z^{1/2}\big\|_F^2\Big) \ge 0.
+\]
+\end{theorem}
+
+\begin{proof}
+定义对称正半定核
+\[
+K_6(u,v) := \frac{3}{28}\frac{(1-u)(1-v)}{u^2 v^2 (1+u)(1+v)}\left[(1+3u+5u^2)(1+3v+5v^2) + 7u^2v^2(2+u)(2+v) + 4u^2v^2 + \frac{uv}{u+v}(28uv + 12u^2v^2)\right].
+\]
+通过部分分式展开（均经精确符号验证恒为零差）：
+\begin{align*}
+  \frac{(1-u)(1+3u+5u^2)}{u^2(1+u)} &= u^{-2} + u^{-1} - 2 + 3g(u), \\
+  \frac{(1-u)(2+u)}{1+u} &= 1 - u + g(u), \qquad
+  \frac{1-u}{u(1+u)} = u^{-1} - 1 - g(u),
+\end{align*}
+从而 $K_6(u,v) = \frac{3}{28}\big[h_1(u)h_1(v) + 7h_2(u)h_2(v) + 4g(u)g(v) + \frac{uv}{u+v}(28g_1(u)g_1(v) + 12g(u)g(v))\big] \succeq 0$。直接验证（经 SymPy 符号化简精确为 $0$）有 $\sum_{\mathrm{cyc}} K_6(y/x, z/x) = 3\Phi_6(x,y,z)$。由命题~\ref{prop:framework} 与引理~\ref{lem:eq_unified} 即得精确五项 Frobenius 平方和恒等式。
+\end{proof}
+
+\begin{corollary}[全维度精化 BMV 下界与统一充要等号条件]\label{cor:all}
+对任意维度 $d\ge 1$ 与 $(n,m) \in \{(3,3), (4,3), (3,4), (6,3), (3,6)\}$：
+\begin{enumerate}
+  \item 对所有半正定矩阵 $A,B\ge 0$，$(E_{n,3})$ 恒成立；当 $A > 0,\, B \ge 0$ 时，等号成立当且仅当 $AB = BA$。
+  \item 对所有复 Hermitian 矩阵 $\alpha, \beta$，精化 BMV 下界 $\mathcal{A}_{n,m}(e^\alpha, e^\beta) \ge \Tr(e^{n\alpha+m\beta})$ 恒成立，且等号成立当且仅当 $[\alpha, \beta] = 0$。
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+不等式与奇异 $A$ 的延拓由定理~\ref{thm:33}--\ref{thm:63} 及 Araki--Lieb--Thirring + Lie--Trotter 直接得出。在三个定理的平方和表达式中，均包含严格正系数的 $\|T^{-1/2} Y Z^{1/2}\|_F^2$（其中 $T = A$ 或 $T = A^{1/3}$）。因此当 $A > 0,\, B \ge 0$ 取等号时，该项必为零；由引理~\ref{lem:eq_unified} 第 2 部分立得 $T X = X T$，进而 $A B = B A$。对于 $(L_{n,3})$，两端取等号必迫使 $(E_{n,3})$ 取等号，故 $e^\alpha e^\beta = e^\beta e^\alpha \iff [\alpha,\beta] = 0$。
+\end{proof}
+
+\section{$(5,3)$ 全维度双 Cauchy 证书与一般 $n$ 展望}
+
+在将上述单 Cauchy 核（仅含 $\frac{uv}{u+v}$）推广到奇数阶 $n=5$ 与 $n=9$ 时，我们发现了一个精确的\textbf{奇偶结构障碍}：对 $n=9$ 的单 Cauchy 拟设，由边界秩-1 约束与 $3\times 3$ Schur 补可推出 $55 b_{33} \ge 153.6$ 与 $55 b_{33} \le 117.98$ 的代数矛盾；$n=5$ 的单 Cauchy 拟设亦存在不可消除的微小负特征值（$\approx -2.7\times 10^{-3}$）。
+
+然而，只要在完全单调 Laplace 核族中引入\textbf{双 Cauchy 核} $\frac{ts}{t+s}$ 与 $\frac{t^3 s^3}{t^3+s^3}$（对应两个 Lyapunov 方程 $T^{-1}Z_1 + Z_1 T^{-1} = X$ 与 $T^{-3}Z_3 + Z_3 T^{-3} = X$），该障碍立刻消失：我们在 $t = u^{1/3},\, s = v^{1/3}$ 下构造出精确有理双 Cauchy 核 $K_5(t^3, s^3)$（公分母 $1680$，三个有理 Gram 矩阵 $A_{5,\mathrm{red}}\in\mathbb{Q}^{7\times 7},\, B_5,C_5\in\mathbb{Q}^{6\times 6}$ 的全部 19 个精确有理 Sylvester 顺序主子式在 SymPy 中严格为正，且轮换和残差符号恒为 $0$），从而同时证明了 \textbf{$(5,3)$ 与 $(3,5)$ 在全部维度 $d\ge 1$ 下的 $(E_{5,3})$、$(L_{5,3})$ 与 $(L_{3,5})$}。此外，在 $n = 1, 2, \dots, 9$ 上离散化乘性网格的 Douglas--Rachford 投影均在机器精度（$10^{-13}\sim 10^{-16}$）内存在正半定核解，$n=12$ 仍存在单 Cauchy 核解，强有力地指向了一般 $(n,3)$ 全维度证明的统一完全单调 Laplace 积分核路线。
+
+\section{独立符号与高维复矩阵数值复核}
+
+\begin{table}[!htbp]
+\centering
+\caption{全维度 $(n,3)$ 精确正半定核与矩阵平方和恒等式的独立机器复核结果}
+\label{tab:verify}
+\begin{tabularx}{\linewidth}{lXlX}
+\toprule
+情形 $(n,3)$ & 此前状态（2026年11月） & SymPy 符号残差 & 高维复 Hermitian 矩阵复核 \\
+\midrule
+$(3,3)$ & 仅证 $d\le 3$（116 项计算机证书） & 精确 `0` & $d=2\dots 12$（150 组），最大相对误差 $2.17\times 10^{-14}$ \\
+$(4,3)/(3,4)$ & 仅证 $d\le 3$（2,283 项计算机证书） & 精确 `0` & $d=3\dots 12$（60 组），最大相对误差 $1.56\times 10^{-14}$ \\
+$(5,3)/(3,5)$ & \textbf{连 $d=3$ 亦开放} & 精确 `0`（19 主子式$>0$） & $d=2\dots 50$（25 组），最大相对误差 $8.27\times 10^{-14}$ \\
+$(6,3)/(3,6)$ & \textbf{连 $d=3$ 亦开放} & 精确 `0` & $d=3\dots 12$（60 组），最大相对误差 $8.79\times 10^{-13}$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{thebibliography}{9}
+\bibitem{Hagele2026}
+D.~H\"agele, \emph{On the lower bound of the refined Bessis--Moussa--Villani conjecture}, preprint (Oct 29, 2026), \href{https://arxiv.org/html/2611.00129v1}{arXiv:2611.00129}.
+
+\bibitem{OQP_M14}
+Open Quantum Problems, \emph{Problem M14: Refined Bessis--Moussa--Villani conjecture} (IQOQI Problem \#40), \url{https://openquantumproblems.com/p/M14}.
+
+\bibitem{IQOQI40}
+IQOQI Vienna, \emph{Open Quantum Problems List (Problem \#40)}, \url{https://oqp.iqoqi.oeaw.ac.at/open-quantum-problems}.
+
+\bibitem{ChaLee2026}
+M.~Cha and H.~H.~Lee, \emph{Counterexample to the upper bound of the refined BMV conjecture}, preprint (Mar 2026), \href{https://arxiv.org/abs/2603.19927}{arXiv:2603.19927}.
+
+\bibitem{Dinh2026}
+T.~H.~Dinh, \emph{On the refined BMV conjecture and spectral bridges}, preprint (May 2026), \href{https://arxiv.org/html/2605.17782v1}{arXiv:2605.17782}.
+
+\bibitem{DinhLeVuong2026}
+T.~H.~Dinh, C.~T.~Le, and B.~K.~Vuong, \emph{Pinching lower bounds for the refined BMV average trace}, preprint (Oct 2026), \href{https://arxiv.org/html/2610.31851v1}{arXiv:2610.31851}.
+\end{thebibliography}
+
+\end{document}

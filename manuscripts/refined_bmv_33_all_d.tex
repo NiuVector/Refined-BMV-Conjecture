@@ -1,0 +1,286 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage{babel}
+\babelprovide[import, main]{chinese}
+\babelfont{rm}{Noto Serif CJK SC}
+\babelfont{sf}{Noto Sans CJK SC}
+\babelfont{tt}{DejaVu Sans Mono}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[a4paper,margin=22mm]{geometry}
+\usepackage{booktabs,tabularx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\definecolor{primary}{RGB}{24, 62, 112}
+\definecolor{accent}{RGB}{168, 44, 44}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primary,
+  citecolor=primary,
+  urlcolor=primary,
+  pdftitle={An Exact Matrix Sum-of-Squares Proof of the (3,3) Refined BMV Lower Bound in All Dimensions},
+  pdfauthor={Lan (Autonomous Mathematical Research Agent)}
+}
+
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\parindent}{0pt}
+
+\newtheorem{theorem}{定理}
+\newtheorem{lemma}[theorem]{引理}
+\newtheorem{corollary}[theorem]{推论}
+\theoremstyle{remark}
+\newtheorem{remark}{注}
+
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\RePart}{\operatorname{Re}}
+\newcommand{\takeaway}[2]{%
+  \vspace{6pt}\noindent\colorbox{primary!8}{%
+    \parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+      \vspace{4pt}\textbf{\color{primary}#1：}\hspace{0.4em}#2\vspace{4pt}%
+    }%
+  }\vspace{6pt}%
+}
+
+\title{\textbf{\color{primary}精化 Bessis--Moussa--Villani 下界猜想在 $(3,3)$ 情形下的全维度精确矩阵平方和证明}\\[4pt]
+\large\textit{An Exact Matrix Sum-of-Squares Proof of the $(3,3)$ Refined BMV Lower Bound in All Dimensions}}
+
+\author{自主数学物理研究报告（由智能体“岚”独立推导并通过符号、数值与对抗性审稿复核）}
+\date{2026年11月27日}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+2017 年，Daniel H\"agele 提出了精化 Bessis--Moussa--Villani（BMV）猜想（收录于 \href{https://oqp.iqoqi.oeaw.ac.at/open-quantum-problems}{IQOQI Open Quantum Problems \#40} 与 \href{https://openquantumproblems.com/p/M14}{Open Quantum Problems M14}），询问由 $n$ 个 $A=e^\alpha$ 与 $m$ 个 $B=e^\beta$ 组成的所有 $\binom{n+m}{m}$ 个矩阵词的平均迹 $\mathcal{A}_{n,m}(e^\alpha, e^\beta)$ 是否满足双边迹不等式 $\Tr(e^{n\alpha+m\beta}) \le \mathcal{A}_{n,m}(e^\alpha, e^\beta) \le \Tr(e^{n\alpha}e^{m\beta})$。2026 年春季该猜想的上界已被证伪，而下界（记为 $(L_{n,m})$）及其强形式均匀词不等式 $\mathcal{A}_{n,m}(A,B)\ge \Tr((A^{n/m}B)^m)$（记为 $(E_{n,m})$）截至 2026 年 11 月仅证明至 $\min(n,m)\le 2$、$d\le 2$ 以及 $d=3,\,n+m\le 7$（依赖计算机有理 Bernstein 多项式证书），首个高维未解情形 $(n,m)=(3,3),\, d\ge 4$ 仍处于开放状态。
+
+本文给出一条完全初等、无须计算机辅助、与矩阵维度 $d$ 无关的精确两项 Frobenius 平方和恒等式，彻底解决了 $(n,m)=(3,3)$ 在\textbf{所有维度 $d\ge 1$} 下的 $(E_{3,3})$ 与 $(L_{3,3})$，并刻画了充要等号条件（对 $A>0,\,B\ge 0$ 等号成立当且仅当 $AB=BA$；对 Hermitian 矩阵 $\alpha,\beta$ 等号成立当且仅当 $[\alpha,\beta]=0$）。
+\end{abstract}
+
+\takeaway{核心定理（一页解决 IQOQI \#40 首个高维开放情形）}{对任意维度 $d \ge 1$ 及任意复 Hermitian 正定矩阵 $A > 0$ 与半正定矩阵 $B \ge 0$，令 $X := A^{1/2}BA^{1/2} \ge 0$，并记 Lyapunov/Sylvester 方程 $AR + RA = AX - XA$ 与 $A^{-1}Z + ZA^{-1} = X$ 的唯一解为 $R$ 与 $Z \ge 0$，令 $S := AXA^{-1} - X + 2R$。则有精确恒等式
+\[
+\mathcal{A}_{3,3}(A,B) - \Tr\!\big((AB)^3\big) = \frac{3}{10}\Big(\big\|S X^{1/2}\big\|_F^2 + 8\big\|A^{-1/2} R Z^{1/2}\big\|_F^2\Big) \ge 0.
+\]
+由此直接推得对任意维度 $d\ge 1$ 及任意 Hermitian 矩阵 $\alpha,\beta$，精化 BMV 下界 $\mathcal{A}_{3,3}(e^\alpha, e^\beta) \ge \Tr(e^{3\alpha+3\beta})$ 恒成立。}
+
+\section{问题背景与 2026 年前沿状态}
+
+经典的 Bessis--Moussa--Villani（BMV）猜想（1975）由 Stahl 于 2013 年最终证明，其等价表述为：对任意正定矩阵 $A,B$ 及非负整数 $n,m$，所有包含 $n$ 个 $A$ 与 $m$ 个 $B$ 的词矩阵之和 $S_{n+m,m}(A,B)$ 满足 $\Tr S_{n+m,m}(A,B) \ge 0$。2017 年，H\"agele 将其精化为对归一化平均迹
+\[
+\mathcal{A}_{n,m}(A,B) := \binom{n+m}{m}^{-1} \Tr S_{n+m,m}(A,B)
+\]
+的双边界猜想（收录于 \href{https://oqp.iqoqi.oeaw.ac.at/open-quantum-problems}{IQOQI 开放量子问题列表 \#40} 与 \href{https://openquantumproblems.com/p/M14}{Open Quantum Problems M14}）。其中：
+\begin{itemize}
+  \item \textbf{上界已证伪}：Cha 与 Lee（2026 年 3 月，\href{https://arxiv.org/abs/2603.19927}{arXiv:2603.19927}）以及 Dinh（2026 年 5 月，\href{https://arxiv.org/html/2605.17782v1}{arXiv:2605.17782}）在 $d=3,\,(n,m)=(5,5)$ 处构造出反例，否定了上界 $\mathcal{A}_{n,m}(A,B)\le \Tr(A^n B^m)$。
+  \item \textbf{下界仍开放}：下界猜想 $(L_{n,m})$ 断言对任意 $d\times d$ 复 Hermitian 矩阵 $\alpha,\beta$，
+  \[
+  \mathcal{A}_{n,m}(e^\alpha, e^\beta) \ge \Tr\!\big(e^{n\alpha + m\beta}\big), \tag{$L_{n,m}$}
+  \]
+  其强形式均匀词不等式 $(E_{n,m})$ 断言对任意 $d\times d$ 复 Hermitian 半正定矩阵 $A,B\ge 0$，
+  \[
+  \mathcal{A}_{n,m}(A,B) \ge \Tr\!\big((A^{n/m}B)^m\big). \tag{$E_{n,m}$}
+  \]
+\end{itemize}
+
+在 2026 年 10 月底的最新预印本 \href{https://arxiv.org/html/2611.00129v1}{arXiv:2611.00129} 中，H\"agele 证明了：$(L_{n,m})$ 在 $\min(n,m)\le 2$（任意 $d$）、$d\le 2$（任意 $n,m$）以及 $d=3,\, n+m\le 7$ 时成立；其中 $d=3$ 的 $(3,3)$ 与 $(4,3)$ 情形依赖三维单三角形 AM--GM 归约与大规模有理 Bernstein 多项式计算机证书（$(3,3)$ 含 116 项、$(4,3)$ 含 2,283 项）。由于 $d\ge 4$ 时每条边被多个三角形共享，该三维归约无法推广，因此 \textbf{$(n,m)=(3,3)$ 在所有维度 $d\ge 4$ 下仍是首要未解的高维开放情形}（参见表~\ref{tab:status}）。
+
+\begin{table}[!htbp]
+\centering
+\caption{精化 BMV 下界猜想 $(L_{n,m})$ 与 $(E_{n,m})$ 的研究进展对比（截至 2026 年 11 月）}
+\label{tab:status}
+\begin{tabularx}{\linewidth}{lXl}
+\toprule
+情形 & 已知结果与方法（截至 2026 年 11 月） & 本文突破 \\
+\midrule
+$\min(n,m)\le 2$，任意 $d$ & 已证明（路径权重非负，\href{https://arxiv.org/html/2611.00129v1}{arXiv:2611.00129}） & 已有结果 \\
+$d\le 2$，任意 $n,m$ & 已证明（路径权重非负，\href{https://arxiv.org/html/2611.00129v1}{arXiv:2611.00129}） & 已有结果 \\
+$d=3,\,(3,3)$ 与 $(4,3)$ & 已证明（三维 AM--GM 归约 + 计算机 Bernstein 证书） & $(3,3)$ 获纯解析半页证明 \\
+\textbf{$d\ge 4,\,(n,m)=(3,3)$} & \textbf{开放（\href{https://openquantumproblems.com/p/M14}{OQP M14} 首个高维未解情形）} & \textbf{本文完全解决（全部 $d\ge 1$）} \\
+$d=3,\,(4,4),(5,3)$ 等 & 仍开放 & 留待后续研究 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{主定理与精确矩阵平方和证明}
+
+\begin{theorem}[$(E_{3,3})$ 的全维度精确平方和恒等式]\label{thm:main}
+设 $d \ge 1$，$A, B \in \mathbb{C}^{d\times d}$ 为复 Hermitian 半正定矩阵。
+\begin{enumerate}
+  \item 若 $A > 0$，令 $X := A^{1/2} B A^{1/2} \ge 0$。设 $R, Z \in \mathbb{C}^{d\times d}$ 分别为 Sylvester/Lyapunov 方程
+  \begin{equation}\label{eq:lyap}
+    A R + R A = A X - X A, \qquad A^{-1} Z + Z A^{-1} = X
+  \end{equation}
+  的唯一解，并令 $S := A X A^{-1} - X + 2R$。则 $Z = \int_0^\infty e^{-t A^{-1}} X e^{-t A^{-1}}\,\mathrm{d}t \ge 0$，且有精确恒等式
+  \begin{align}
+    \mathcal{A}_{3,3}(A,B) - \Tr\!\big((AB)^3\big)
+    &= \frac{3}{10}\Big(\Tr(A^3 B^3) + \Tr(A^2 B A B^2) + \Tr(A^2 B^2 A B) - 3\Tr\!\big((AB)^3\big)\Big) \nonumber \\
+    &= \frac{3}{10}\Big(\big\|S X^{1/2}\big\|_F^2 + 8\big\|A^{-1/2} R Z^{1/2}\big\|_F^2\Big) \ge 0. \label{eq:sos}
+  \end{align}
+  进一步，对 $A > 0,\, B \ge 0$，等号成立当且仅当 $AB = BA$。
+  \item 对任意半正定矩阵 $A, B \ge 0$（包括奇异 $A$），$\mathcal{A}_{3,3}(A,B) \ge \Tr((AB)^3)$ 在一切维度 $d\ge 1$ 下恒成立。
+\end{enumerate}
+\end{theorem}
+
+\begin{lemma}[正定对称有理核分解]\label{lem:kernel}
+对任意 $x, y, z > 0$，定义
+\[
+\Psi(x,y,z) := \frac{x^2}{yz} + \frac{y^2}{zx} + \frac{z^2}{xy} + \frac{x}{y} + \frac{y}{x} + \frac{y}{z} + \frac{z}{y} + \frac{z}{x} + \frac{x}{z} - 9.
+\]
+对任意 $u, v > 0$，定义对称核
+\[
+K(u,v) := f(u)f(v) + 8\,g(u)g(v)\,\frac{uv}{u+v}, \qquad
+f(u) := \frac{(1-u)(1+3u)}{u(1+u)}, \quad g(u) := \frac{1-u}{1+u}.
+\]
+则对一切 $x, y, z > 0$ 恒有
+\begin{equation}\label{eq:kernel}
+  K\!\left(\frac{y}{x}, \frac{z}{x}\right) + K\!\left(\frac{z}{y}, \frac{x}{y}\right) + K\!\left(\frac{x}{z}, \frac{y}{z}\right) = \Psi(x,y,z).
+\end{equation}
+\end{lemma}
+
+\begin{proof}[引理~\ref{lem:kernel} 的证明]
+首先定义辅助核 $K_0(u,v) := (\tfrac{1}{u}-1)(\tfrac{1}{v}-1)\big(1 + 2(u+v)\big)$。代入 $(u,v)=(y/x,z/x)$ 得
+\[
+K_0\!\left(\frac{y}{x},\frac{z}{x}\right)
+= \frac{(x-y)(x-z)}{yz} + 2\,\frac{(x-y)(x-z)(y+z)}{xyz}.
+\]
+逐项展开可见：
+\begin{align*}
+  \frac{(x-y)(x-z)}{yz} &= \frac{x^2}{yz} - \frac{x}{y} - \frac{x}{z} + 1, \\
+  \frac{(x-y)(x-z)(y+z)}{xyz} &= \frac{x}{y} + \frac{x}{z} + \frac{y}{x} + \frac{z}{x} - \frac{y}{z} - \frac{z}{y} - 2.
+\end{align*}
+对 $(x,y,z)$ 作三项轮换求和，第一式给出 $(\tfrac{x^2}{yz}+\tfrac{y^2}{zx}+\tfrac{z^2}{xy}) - (\tfrac{x}{y}+\tfrac{y}{x}+\tfrac{y}{z}+\tfrac{z}{y}+\tfrac{z}{x}+\tfrac{x}{z}) + 3$，第二式给出 $(\tfrac{x}{y}+\tfrac{y}{x}+\tfrac{y}{z}+\tfrac{z}{y}+\tfrac{z}{x}+\tfrac{x}{z}) - 6$。第一式加两倍第二式恰好等于 $\Psi(x,y,z)$，故 $\sum_{\mathrm{cyc}} K_0(y/x, z/x) = \Psi(x,y,z)$。
+
+其次定义零轮换修正核
+\[
+\Delta(u,v) := -2\left(\frac{1}{u}-1\right)\left(\frac{1}{v}-1\right)\frac{(u-v)^2(u+v+uv)}{(1+u)(1+v)(u+v)}.
+\]
+代入 $(u,v)=(y/x,z/x)$ 得
+\[
+\Delta\!\left(\frac{y}{x},\frac{z}{x}\right) = -2\,\frac{xy+yz+zx}{xyz(x+y)(y+z)(z+x)} \cdot (x-y)(x-z)(y-z)^2.
+\]
+前因子关于 $(x,y,z)$ 完全对称，而尾因子的轮换和恒为零：
+\[
+\sum_{\mathrm{cyc}}(x-y)(x-z)(y-z)^2 = -(x-y)(y-z)(z-x)\big[(y-z)+(z-x)+(x-y)\big] = 0.
+\]
+因此 $\sum_{\mathrm{cyc}} \Delta(y/x, z/x) = 0$。最后验证 $K_0(u,v) + \Delta(u,v) = K(u,v)$：利用 $(1+u)(1+v)=1+(u+v+uv)$ 与 $(u+v)^2-(u-v)^2 = 4uv$，有
+\begin{align*}
+  1 + 2(u+v) - 2\,\frac{(u-v)^2(u+v+uv)}{(1+u)(1+v)(u+v)}
+  &= 1 + \frac{2(u+v)^2 + 2\big((u+v)^2-(u-v)^2\big)(u+v+uv)}{(1+u)(1+v)(u+v)} \\
+  &= 1 + \frac{2(u+v)^2 + 8uv(u+v) + 8u^2v^2}{(1+u)(1+v)(u+v)} \\
+  &= \frac{(1+u+v+uv) + 2(u+v) + 8uv}{(1+u)(1+v)} + \frac{8u^2v^2}{(1+u)(1+v)(u+v)} \\
+  &= \frac{(1+3u)(1+3v)}{(1+u)(1+v)} + \frac{8u^2v^2}{(1+u)(1+v)(u+v)}.
+\end{align*}
+两端同乘 $(\tfrac{1-u}{u})(\tfrac{1-v}{v})$ 即得 $K_0(u,v) + \Delta(u,v) = K(u,v)$。合并轮换和即证得 \eqref{eq:kernel}。
+\end{proof}
+
+\begin{proof}[定理~\ref{thm:main} 的证明]
+\textbf{第一步（20-词轨道分组）。}
+在长度为 6、包含 3 个 $A$ 与 3 个 $B$ 的全部 $\binom{6}{3}=20$ 个词中，按循环等价类分为四组：\texttt{AAABBB}（6 个循环移位，迹均为 $\Tr(A^3B^3)$）、\texttt{AABABB}（6 个，迹均为 $\Tr(A^2BAB^2)$）、\texttt{AABBAB}（6 个，迹均为 $\Tr(A^2B^2AB)=\overline{\Tr(A^2BAB^2)}$）以及 \texttt{ABABAB}（2 个，迹均为 $\Tr((AB)^3)$）。由此直接得
+\[
+\mathcal{A}_{3,3}(A,B) - \Tr\!\big((AB)^3\big)
+= \frac{3}{10} D(A,B),
+\]
+其中 $D(A,B) := \Tr(A^3B^3) + \Tr(A^2BAB^2) + \Tr(A^2B^2AB) - 3\Tr((AB)^3)$。注意对一般复 Hermitian 矩阵 $A,B$，单项 $\Tr(A^2BAB^2)$ 可具有非零虚部，但其与共轭项 $\Tr(A^2B^2AB)$ 之和恒为实数 $2\RePart\Tr(A^2BAB^2)$。
+
+\textbf{第二步（$A>0$ 特征基展开与三项轮换求和）。}
+设 $A>0$。由迹的酉不变性，不妨在 $A$ 的特征基下取 $A = \operatorname{diag}(a_1,\dots,a_d)$（$a_i > 0$），并令 $X = A^{1/2} B A^{1/2} \ge 0$，于是 $B = A^{-1/2} X A^{-1/2}$。利用迹的循环不变性：
+\begin{align*}
+  \Tr(A^3 B^3) &= \Tr(A^2 X A^{-1} X A^{-1} X) = \sum_{i,j,k=1}^d \frac{a_i^2}{a_j a_k}\, X_{ij} X_{jk} X_{ki}, \\
+  \Tr(A^2 B A B^2) &= \Tr(A X^2 A^{-1} X) = \sum_{i,j,k=1}^d \frac{a_i}{a_k}\, X_{ij} X_{jk} X_{ki}, \\
+  \Tr(A^2 B^2 A B) &= \Tr(A X A^{-1} X^2) = \sum_{i,j,k=1}^d \frac{a_i}{a_j}\, X_{ij} X_{jk} X_{ki}, \\
+  \Tr\!\big((AB)^3\big) &= \Tr(X^3) = \sum_{i,j,k=1}^d X_{ij} X_{jk} X_{ki}.
+\end{align*}
+由于乘积 $X_{ij}X_{jk}X_{ki}$ 在指标轮换 $(i,j,k)\mapsto(j,k,i)\mapsto(k,i,j)$ 下保持不变，将上式对三次轮换求和（系数相加）并应用引理~\ref{lem:kernel} 得
+\[
+3 D(A,B) = \sum_{i,j,k=1}^d \Psi(a_i, a_j, a_k)\, X_{ij} X_{jk} X_{ki}
+= \sum_{i,j,k=1}^d \left[K\!\left(\frac{a_j}{a_i},\frac{a_k}{a_i}\right) + K\!\left(\frac{a_k}{a_j},\frac{a_i}{a_j}\right) + K\!\left(\frac{a_i}{a_k},\frac{a_j}{a_k}\right)\right] X_{ij} X_{jk} X_{ki}.
+\]
+再次利用 $X_{ij}X_{jk}X_{ki}$ 的轮换不变性，三项求和完全相等，除以 $3$ 即得
+\begin{equation}\label{eq:triple}
+  D(A,B) = \sum_{i,j,k=1}^d K\!\left(\frac{a_j}{a_i}, \frac{a_k}{a_i}\right) X_{ij} X_{jk} X_{ki}.
+\end{equation}
+
+\textbf{第三步（Lyapunov/Sylvester 方程与精确 Frobenius 平方和）。}
+因 $\sigma(A), \sigma(A^{-1}) \subset (0,\infty)$，方程~\eqref{eq:lyap} 存在唯一解。在 $A = \operatorname{diag}(a_1,\dots,a_d)$ 的特征基下逐元素求解：
+\[
+R_{ij} = \frac{a_i - a_j}{a_i + a_j} X_{ij} = g\!\left(\frac{a_j}{a_i}\right) X_{ij}, \qquad
+Z_{jk} = \frac{1}{a_j^{-1} + a_k^{-1}} X_{jk} = \frac{a_j a_k}{a_j + a_k} X_{jk}.
+\]
+显然 $Z$ 具有积分解 $Z = \int_0^\infty e^{-t A^{-1}} X e^{-t A^{-1}}\,\mathrm{d}t$，由 $X \ge 0$ 立知 $Z \ge 0$，故 $Z^{1/2}$ 良定义。对 $S = A X A^{-1} - X + 2R$，逐元素计算得
+\[
+S_{ij} = \left(\frac{a_i}{a_j} - 1 + 2\,\frac{a_i - a_j}{a_i + a_j}\right) X_{ij}
+= \frac{(a_i - a_j)(a_i + 3a_j)}{a_j(a_i + a_j)} X_{ij}
+= f\!\left(\frac{a_j}{a_i}\right) X_{ij}.
+\]
+因为 $X$ 是复 Hermitian 矩阵（$X_{ki} = \overline{X_{ik}}$）且 $f, g$ 为实函数，有 $(S^*)_{ki} = \overline{S_{ik}} = f(a_k/a_i) X_{ki}$ 与 $(R^*)_{ki} = \overline{R_{ik}} = g(a_k/a_i) X_{ki}$。代入 \eqref{eq:triple} 的两项：
+\begin{align*}
+  \sum_{i,j,k=1}^d f\!\left(\frac{a_j}{a_i}\right) f\!\left(\frac{a_k}{a_i}\right) X_{ij} X_{jk} X_{ki}
+  &= \sum_{i,j,k=1}^d S_{ij} X_{jk} (S^*)_{ki} = \Tr(S X S^*) = \big\|S X^{1/2}\big\|_F^2, \\
+  8\sum_{i,j,k=1}^d g\!\left(\frac{a_j}{a_i}\right) g\!\left(\frac{a_k}{a_i}\right) \frac{(a_j/a_i)(a_k/a_i)}{a_j/a_i + a_k/a_i} X_{ij} X_{jk} X_{ki}
+  &= 8\sum_{i,j,k=1}^d \frac{1}{a_i} R_{ij} Z_{jk} (R^*)_{ki} = 8\Tr(A^{-1} R Z R^*) = 8\big\|A^{-1/2} R Z^{1/2}\big\|_F^2.
+\end{align*}
+两项相加即得 \eqref{eq:sos}，从而 $D(A,B) \ge 0$。
+
+\textbf{第四步（等号条件刻画，对 $A>0,\,B\ge 0$ 普遍成立）。}
+若 $AB = BA$，则 $AX = XA$，由 \eqref{eq:lyap} 的唯一性得 $R = 0$，继而 $S = 0$，等号成立。反之，若等号成立，则由 \eqref{eq:sos} 得 $S X^{1/2} = 0$ 且 $A^{-1/2} R Z^{1/2} = 0$。将 $Z = \int_0^\infty e^{-t A^{-1}} X e^{-t A^{-1}}\,\mathrm{d}t$ 代入后者有
+\[
+0 = \big\|A^{-1/2} R Z^{1/2}\big\|_F^2 = \int_0^\infty \big\|A^{-1/2} R e^{-t A^{-1}} X^{1/2}\big\|_F^2\,\mathrm{d}t.
+\]
+被积函数在 $[0,\infty)$ 上连续且非负，故在 $t=0$ 处必为零，即 $A^{-1/2} R X^{1/2} = 0$。因 $A^{-1/2} > 0$，得 $R X^{1/2} = 0$，从而 $R X = 0$。结合 $S X = (A X A^{-1} - X + 2R)X = 0$，推得 $(A X A^{-1} - X) X = 0$。取迹得
+\[
+0 = \Tr(A X A^{-1} X - X^2) = \frac{1}{2}\sum_{i,j=1}^d \frac{(a_i - a_j)^2}{a_i a_j} |X_{ij}|^2.
+\]
+因 $a_i > 0$，凡 $a_i \neq a_j$ 必有 $X_{ij} = 0$，即 $AX = XA$。两边同乘 $A^{-1/2}$ 合同变换即得 $AB = BA$。上述论证不要求 $B$ 可逆。
+
+\textbf{第五步（奇异 $A\ge 0$ 的连续性延拓）。}
+对一般半正定矩阵 $A,B\ge 0$，令 $A_\varepsilon = A + \varepsilon I > 0$（$\varepsilon > 0$）。对每个 $\varepsilon > 0$ 有 $\mathcal{A}_{3,3}(A_\varepsilon, B) \ge \Tr((A_\varepsilon B)^3)$，令 $\varepsilon \to 0^+$，由多项式连续性即证得第 2 部分。
+\end{proof}
+
+\begin{corollary}[精化 BMV 下界 $(L_{3,3})$ 在全维度 $d\ge 1$ 下成立]\label{cor:L33}
+对任意维度 $d \ge 1$ 及任意 $d\times d$ 复 Hermitian 矩阵 $\alpha, \beta$，均有
+\begin{equation}\label{eq:L33}
+  \mathcal{A}_{3,3}(e^\alpha, e^\beta) \ge \Tr\!\big((e^\alpha e^\beta)^3\big) \ge \Tr\!\big(e^{3\alpha + 3\beta}\big),
+\end{equation}
+且 $\mathcal{A}_{3,3}(e^\alpha, e^\beta) = \Tr(e^{3\alpha+3\beta})$ 当且仅当 $[\alpha, \beta] = 0$。
+\end{corollary}
+
+\begin{proof}
+取 $A = e^\alpha > 0$ 与 $B = e^\beta > 0$，第一个不等式即定理~\ref{thm:main}。对第二个不等式，对任意正整数 $m \ge 1$，将 Araki--Lieb--Thirring 不等式 $\Tr((Q P Q)^{rm}) \le \Tr((Q^m P^m Q^m)^r)$ 应用于 $P = e^{\alpha/m},\, Q = e^{\beta/(2m)},\, r = 3$ 得
+\[
+\Tr\!\big((e^{\beta/(2m)} e^{\alpha/m} e^{\beta/(2m)})^{3m}\big) \le \Tr\!\big((e^{\beta/2} e^\alpha e^{\beta/2})^3\big) = \Tr\!\big((e^\alpha e^\beta)^3\big).
+\]
+由 Lie--Trotter 乘积公式，令 $m \to \infty$ 时左端收敛于 $\Tr(e^{3\alpha + 3\beta})$，即得 \eqref{eq:L33}。若两端等号成立，则第一个不等式必取等号；由定理~\ref{thm:main} 第 1 部分立得 $e^\alpha e^\beta = e^\beta e^\alpha$。因 $\alpha,\beta$ 为 Hermitian 矩阵，其谱为有限正实集上对数函数的多项式插值，故 $e^\alpha e^\beta = e^\beta e^\alpha \iff [\alpha,\beta] = 0$（无需额外调用 Araki--Lieb--Thirring 的等号刻画）。
+\end{proof}
+
+\section{符号、数值与对抗性独立复核摘要}
+
+除逐行人工与独立对抗性审稿（Verdict: PASS）外，本文在本地沙箱中使用 Python（SymPy 与 SciPy）对所有核心恒等式进行了独立机器复核：
+\begin{itemize}
+  \item \textbf{精确符号验证（SymPy）}：对五组核心有理恒等式（$K_0 + \Delta - K \equiv 0$、$\sum_{\mathrm{cyc}} K_0 - \Psi \equiv 0$、$\sum_{\mathrm{cyc}} \Delta \equiv 0$、$\sum_{\mathrm{cyc}} K - \Psi \equiv 0$ 以及 $S_{ij}$ 系数恒等式）进行精确符号化简，结果全部恒为 $0$。
+  \item \textbf{高维复 Hermitian 矩阵全词展开复核}：在 $d \in \{2, 3, 4, 5, 8, 12\}$ 上随机生成 150 组一般复 Hermitian 正定/半正定（含秩亏奇异 $B$）矩阵对，显式遍历全部 20 个长度为 6 的词并求解连续 Lyapunov 方程。观测到 $\max |\operatorname{Im}\Tr(A^2BAB^2)| = 2.15 \times 10^{-3}$（证实复矩阵下保留共轭项的必要性），20-词分组恒等式最大相对误差为 $7.45 \times 10^{-16}$，两项 Frobenius 平方和恒等式 \eqref{eq:sos} 的最大相对误差为 $2.17 \times 10^{-14}$。
+  \item \textbf{极端病态对抗检验}：在 $\Tr(A^2BAB^2) < \Tr((AB)^3)$ 的强对抗区（如 $A = \operatorname{diag}(10^6, 1, 10^3)$ 与对应 $X$ 使单项差值低至 $-1.16\times 10^4$），恒等式 \eqref{eq:sos} 的相对误差为 $1.93 \times 10^{-16}$，完整差值严格为正。
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{Hagele2026}
+D.~H\"agele, \emph{On the lower bound of the refined Bessis--Moussa--Villani conjecture}, preprint (Oct 29, 2026), \href{https://arxiv.org/html/2611.00129v1}{arXiv:2611.00129}.
+
+\bibitem{OQP_M14}
+Open Quantum Problems, \emph{Problem M14: Refined Bessis--Moussa--Villani conjecture} (IQOQI Problem \#40), \url{https://openquantumproblems.com/p/M14}.
+
+\bibitem{IQOQI40}
+IQOQI Vienna, \emph{Open Quantum Problems List (Problem \#40)}, \url{https://oqp.iqoqi.oeaw.ac.at/open-quantum-problems}.
+
+\bibitem{ChaLee2026}
+M.~Cha and H.~H.~Lee, \emph{Counterexample to the upper bound of the refined BMV conjecture}, preprint (Mar 2026), \href{https://arxiv.org/abs/2603.19927}{arXiv:2603.19927}.
+
+\bibitem{Dinh2026}
+T.~H.~Dinh, \emph{On the refined BMV conjecture and spectral bridges}, preprint (May 2026), \href{https://arxiv.org/html/2605.17782v1}{arXiv:2605.17782}.
+
+\bibitem{DinhLeVuong2026}
+T.~H.~Dinh, C.~T.~Le, and B.~K.~Vuong, \emph{Pinching lower bounds for the refined BMV average trace}, preprint (Oct 2026), \href{https://arxiv.org/html/2610.31851v1}{arXiv:2610.31851}.
+\end{thebibliography}
+
+\end{document}

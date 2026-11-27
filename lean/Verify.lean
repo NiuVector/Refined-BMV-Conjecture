@@ -1,0 +1,36 @@
+import RefinedBMV
+
+#print axioms RefinedBMV.cycleSum_nonneg_of_cyclic
+#print axioms RefinedBMV.certificateFive
+#print axioms RefinedBMV.even_word_m3_one_through_six
+#print axioms RefinedBMV.block_cyclic_identity
+#print axioms RefinedBMV.positive_of_region_bounds
+#print axioms RefinedBMV.residual_positive_of_integral
+#print axioms RefinedBMV.lowerDiagonal_duhamel_pos
+#print axioms RefinedBMV.duhamel_spectral_nonneg
+#print axioms RefinedBMV.familyWeight_eq_finiteWeight
+#print axioms RefinedBMV.even_word_m3_of_residual
+#print axioms RefinedBMV.quarticKernel_cyclic
+#print axioms RefinedBMV.quarticEvenBlock_positive
+#print axioms RefinedBMV.quarticOddBlock_positive
+#print axioms RefinedBMV.quarticCertificateThree
+#print axioms RefinedBMV.even_word_m4_one_through_three
+#print axioms RefinedBMV.even_word_44
+#print axioms RefinedBMV.even_word_44_congruence
+#print axioms RefinedBMV.lowerDiagonal_pos
+#print axioms RefinedBMV.gaugedResidual_tendsto_left
+#print axioms RefinedBMV.gaugedResidual_tendsto_top
+#print axioms RefinedBMV.residual_positive_of_mixedDensity
+#print axioms RefinedBMV.even_word_m3_of_uniform_mixedDensity
+#print axioms RefinedBMV.duhamel_spectral_of_mixedDensity
+#print axioms RefinedBMV.quarticCertificateFive
+#print axioms RefinedBMV.quarticCertificateSix
+#print axioms RefinedBMV.quarticCertificateEight
+#print axioms RefinedBMV.even_word_m4_family
+#print axioms RefinedBMV.exponential_trace_le_spread
+#print axioms RefinedBMV.exponential_m3_one_through_six
+#print axioms RefinedBMV.exponential_m3_of_mixedDensity
+#print axioms RefinedBMV.exponential_m4_family
+#print axioms RefinedBMV.affine_trace_third_derivative
+#print axioms RefinedBMV.wordAverage_tendsto_duhamel
+#print axioms RefinedBMV.duhamel_of_uniform_mixedDensity
